@@ -1,0 +1,92 @@
+body {
+  height: 100%;
+  background-color: black;
+  color: white;
+}
+
+.sidebar {
+  overflow:hidden;
+  width:100%;
+  border:3px solid #333;
+}
+
+.sidebar-tab {
+  width: 18%;
+  float:left;
+  padding: 5px;
+  text-align: center;
+}
+
+.background-image {
+  /* position: fixed; */
+  z-index: 0;
+}
+
+.intro {
+  position: fixed; /* Sit on top of the page content */
+  height: 100px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  /* cursor: pointer; /* Add a pointer on hover */
+  background-color: rgba(0,0,0,.8);
+}
+
+.intro:hidden  {
+  height: 20px;
+  font-size: 10;
+}
+
+.body {
+  position: relative;
+  top: 95px;
+}
+
+element.style {
+}
+.c-main-nav__link {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    display: inline-block;
+    text-transform: uppercase;
+    color: #132a46;
+    position: relative;
+}
+.c-main-nav__link {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    display: inline-block;
+    text-transform: uppercase;
+    color: #132a46;
+    position: relative;
+}
+
+.intro a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.intro a:hover {
+    color: white;
+    text-decoration: underline;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+#hidearrow {
+  color: white;
+  height: 20px;
+  width: 20px;
+  position: absolute;
+  font-size: 18;
+  top: 10px;
+  right: 10px;
+}
+
+#onrecorddesc {float:left; display:inline; width: 30%;}
+
+#onrecord1 {width: 25%;}
