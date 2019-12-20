@@ -1,12 +1,11 @@
 <HTML>
   <head>
-    <title>Jake Zane</title>
-    <link rel="stylesheet" href="css/jakestyle.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="js/jakescript.js"></script>
+      <title>Jake Zane</title>
+      <?php include 'header.php'; ?>
   </head>
   <body>
     <div class = "wrap">
+      <?php include 'intro.php';?>
       <div class = "body">
           <h3> Background </h3>
           <p>
