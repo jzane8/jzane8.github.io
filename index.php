@@ -1,12 +1,40 @@
 <HTML>
   <head>
-    <title>Jake Zane</title>
-    <link rel="stylesheet" href="css/jakestyle.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="js/jakescript.js"></script>
+      <title>Jake Zane</title>
+      <link rel="stylesheet" href="css/jakestyle.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+      <script src="js/jakescript.js"></script>
   </head>
   <body>
     <div class = "wrap">
+      <div class = "intro" id = "intro">
+        <h2>
+          <a href = "/index.html">
+          <b> Jacob "Jake" Zane </b>
+          </a>
+        </h2>
+        <div id = "hidearrow" onclick="hideIntro()">&#8613;</div>
+
+        <div class = "sidebar">
+          <div class = "sidebar-tab" id = "about">
+            <a href = "/index.html"> About </a>
+          </div>
+          <div class = "sidebar-tab" id = "projects">
+            <a href = "/projects.html"> Projects </a>
+          </div>
+          <div class = "sidebar-tab" id = "music">
+            <a href = "/music.html"> Music </a>
+          </div>
+          <div class = "sidebar-tab" id = "esports">
+            <a href = "/esports.html"> Esports </a>
+          </div>
+          <div class = "sidebar-tab" id = "contact">
+            <a href = "/contact.html"> Contact </a>
+          </div>
+        </div>
+
+      </div>
+
       <div class = "body">
           <h3> Background </h3>
           <p>
@@ -16,8 +44,10 @@
           </p>
           <h3> Work History </h3>
           <p>
-            <h4> 2019 </h4>
-            Currently working as a research assistant in the <a href = "https://lab.plopes.org/"> Human-Computer Integration Lab</a> at the University of Chicago under professor Pedro Lopes.
+            <h4> 2021 </h4>
+            Studying for my master's degree in computer science and intelligent systems at the University of Colorado at Boulder.
+            <h4> 2019-2020 </h4>
+            Worked as a research assistant in the <a href = "https://lab.plopes.org/"> Human-Computer Integration Lab</a> at the University of Chicago under professor Pedro Lopes.
             <h4> 2018 </h4>
             Worked for UnitedHealthGroup's Research & Development division (Savvysherpa) during the summer of 2018 developing devices that monitored
             user biometric data and helping to run studies that analyzed biometric responses to stress stimuli.
