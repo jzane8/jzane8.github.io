@@ -42,8 +42,10 @@
           </p>
           <h3> Work History </h3>
           <p>
-            <h4> 2021 </h4>
-            Studying for my master's degree in computer science and intelligent systems at the University of Colorado at Boulder.
+            <h4> 2022-Present </h4>
+            Working as a software developer and tech lead at AdaptHealth L.L.C.
+            <h4> 2021-2022 </h4>
+            Graduated with my master's degree in computer science and intelligent systems at the University of Colorado at Boulder.
             <h4> 2019-2020 </h4>
             Worked as a research assistant in the <a href = "https://lab.plopes.org/"> Human-Computer Integration Lab</a> at the University of Chicago under professor Pedro Lopes.
             <h4> 2018 </h4>
