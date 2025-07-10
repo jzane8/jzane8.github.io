@@ -147,6 +147,25 @@ body {
   text-decoration: underline;
 }
 
+/* List styling */
+.body ul, .body ol {
+  margin: 15px 0;
+  padding-left: 30px;
+}
+
+.body li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.body ul li {
+  list-style-type: disc;
+}
+
+.body ol li {
+  list-style-type: decimal;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .wrap {
