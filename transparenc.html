@@ -129,17 +129,19 @@
       <div class = "body">
         <h3>This is strictly for demo purposes only.</h3>
           <div class="transparenc-logo">
-            <svg width="400" height="60" viewBox="0 0 400 60">
-              <text x="0" y="40" font-family="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" font-size="36" font-weight="bold" fill="#2c3e50">
+            <div style="display: flex; align-items: baseline; gap: 2px;">
+              <span style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 36px; font-weight: bold; color: #2c3e50;">
                 Transparen
-              </text>
-              <text x="185" y="40" font-family="'Old English Text MT', 'Cloister Black', 'Blackletter686 BT', 'UnifrakturMaguntia', serif" font-size="42" font-weight="900" fill="#800000">
-                C
-              </text>
-              <text x="0" y="58" font-family="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" font-size="16" fill="#2c3e50">
-                Student Housing
-              </text>
-            </svg>
+              </span>
+              <img src="images/cubs-c-logo.png" 
+                   alt="Chicago Cubs C" 
+                   style="height: 45px; width: auto; margin-left: -2px;"
+                   onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+              <span style="font-family: 'Arial Black', sans-serif; font-size: 42px; font-weight: 900; color: #0E3386; display: none;">C</span>
+            </div>
+            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 16px; color: #2c3e50; margin-top: 5px;">
+              Student Housing
+            </div>
           </div>
           
           <h4> Introduction </h4>
@@ -331,6 +333,19 @@
     </div>
 
     <script>
+      async function loadCubsLogo(img) {
+        try {
+          // Read the uploaded Cubs logo file
+          const fileData = await window.fs.readFile('paste.txt', { encoding: 'utf8' });
+          // For now, we'll use a Cubs blue C as fallback since we can't directly embed the uploaded image
+          img.style.display = 'none';
+          img.nextElementSibling.style.display = 'inline';
+        } catch (error) {
+          img.style.display = 'none';
+          img.nextElementSibling.style.display = 'inline';
+        }
+      }
+
       function openMacModal() {
         document.getElementById('macModal').style.display = 'block';
       }
