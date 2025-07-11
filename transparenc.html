@@ -153,7 +153,9 @@
             
             <div class="lease-item">
               <input type="checkbox" id="anti-mac">
-              <label for="anti-mac"><strong>Anti-MAC community contribution: $25/month</strong> (Optional)</label>
+              <label for="anti-mac"><strong>Anti-MAC community contribution: $25/month</strong> (Optional) 
+                <button type="button" class="info-button" onclick="openMacModal()">Why?</button>
+              </label>
               <div class="profit-margin">Profit margin: 0% | Goes towards funding developments to knock MAC out of their ludicrous real estate monopoly in our otherwise incredible neighborhood.</div>
             </div>
           </div>
@@ -173,5 +175,86 @@
           </p>
       </div>
     </div>
+
+    <!-- MAC Properties Modal -->
+    <div id="macModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeMacModal()">&times;</span>
+        <div class="mac-container">
+          <h1>MAC Properties: Documented Issues and Complaints</h1>
+          
+          <h2>Legal Issues and Discrimination</h2>
+          <ul>
+            <li>
+              <strong>Class-Action Lawsuit (December 2024):</strong> Four housing choice voucher holders filed a class-action lawsuit against Mac Properties following years of complaints
+              <div class="source-link">Source: <a href="https://chicago.suntimes.com/real-estate/2024/12/17/mac-properties-hyde-park-housing-voucher-apartments-class-action-lawsuit" target="_blank">Chicago Sun-Times</a></div>
+            </li>
+          </ul>
+
+          <h2>Management Practices</h2>
+          <ul>
+            <li>
+              <strong>COVID-19 NDAs:</strong> Required tenants to sign nondisclosure agreements before discussing rent payment arrangements during the pandemic
+              <div class="source-link">Source: <a href="https://chicagomaroon.com/27778/news/mac-residents-must-sign-ndas-discussing-rent-chang/" target="_blank">Chicago Maroon</a></div>
+            </li>
+            <li>
+              <strong>Tenant Relations:</strong> Residents describe management as <span class="highlight">"ignorant, confrontational, greedy, uncaring, unreliable"</span> and feeling treated <span class="highlight">"like they are crap"</span>
+              <div class="source-link">Source: Multiple apartment review websites</div>
+            </li>
+            <li>
+              <strong>Billing Disputes:</strong> Multiple disputes over electric charges and account discrepancies resulting in denied refunds
+              <div class="source-link">Source: Better Business Bureau records</div>
+            </li>
+          </ul>
+
+          <h2>Property Conditions</h2>
+          <ul>
+            <li>
+              <strong>Facility Quality:</strong> Complaints about small gym facilities and deteriorating common areas
+              <div class="source-link">Source: Various tenant review platforms</div>
+            </li>
+            <li>
+              <strong>Maintenance Issues:</strong> Inconsistent response times for repair requests
+              <div class="source-link">Source: Various tenant review platforms</div>
+            </li>
+          </ul>
+
+          <h2>Additional Sources</h2>
+          <ul>
+            <li>
+              <a href="https://www.hpherald.com/evening_digest/housing-voucher-holders-launch-lawsuit-against-mac-properties-alleging-discrimination/article_4f1aa0ac-bd90-11ef-bdc1-c7010845654d.html" target="_blank">Hyde Park Herald</a> - Additional coverage of discrimination lawsuit
+            </li>
+            <li>
+              <a href="https://blockclubchicago.org/2020/04/10/hyde-park-landlord-forces-tenants-who-need-rent-relief-to-sign-nondisclosure-agreements/" target="_blank">Block Club Chicago</a> - NDA reporting
+            </li>
+            <li>
+              <a href="https://therealdeal.com/chicago/2024/12/17/mac-properties-accused-of-racial-income-based-discrimination/" target="_blank">The Real Deal</a> - Lawsuit coverage
+            </li>
+          </ul>
+
+          <div class="disclaimer">
+            <strong>Disclaimer:</strong> This information is compiled from publicly available sources including news reports, court filings, and tenant review platforms. MAC Properties has disputed various allegations. This document is for informational purposes only and should not be construed as legal advice.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function openMacModal() {
+        document.getElementById('macModal').style.display = 'block';
+      }
+
+      function closeMacModal() {
+        document.getElementById('macModal').style.display = 'none';
+      }
+
+      // Close modal when clicking outside of it
+      window.onclick = function(event) {
+        var modal = document.getElementById('macModal');
+        if (event.target == modal) {
+          modal.style.display = 'none';
+        }
+      }
+    </script>
   </body>
 </HTML>
