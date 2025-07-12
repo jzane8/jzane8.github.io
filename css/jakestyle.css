@@ -340,6 +340,7 @@ li {
 /* Main Content */
 .body {
   padding: var(--space-2xl);
+  padding-bottom: calc(var(--space-2xl) + 80px); /* Extra padding to account for fixed button */
   animation: fadeIn var(--transition-slow);
 }
 
@@ -473,7 +474,7 @@ li {
   bottom: 2rem;
   right: 2rem;
   padding: 1rem 2rem;
-  background: var(--gradient-primary);
+  background: linear-gradient(135deg, #FF1744 0%, #F50057 100%); /* Unique red-pink gradient */
   color: white;
   border: none;
   border-radius: 15px;
@@ -481,7 +482,7 @@ li {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 8px 32px rgba(79, 70, 229, 0.3);
+  box-shadow: 0 8px 32px rgba(255, 23, 68, 0.4);
   z-index: 100;
   overflow: hidden;
 }
@@ -501,7 +502,7 @@ li {
 
 .theme-toggle:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 40px rgba(79, 70, 229, 0.4);
+  box-shadow: 0 12px 40px rgba(255, 23, 68, 0.5);
 }
 
 .theme-toggle:hover::before {
@@ -511,7 +512,7 @@ li {
 
 .theme-toggle:active {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
+  box-shadow: 0 6px 20px rgba(255, 23, 68, 0.6);
 }
 
 .theme-toggle span {
@@ -529,7 +530,7 @@ li {
   width: auto;
   padding: 12px 24px;
   margin: 0;
-  background: var(--gradient-primary);
+  background: linear-gradient(135deg, #FF1744 0%, #F50057 100%); /* Same red-pink gradient */
   color: white;
   border: none;
   border-radius: 25px;
@@ -537,7 +538,7 @@ li {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 8px 32px rgba(79, 70, 229, 0.3);
+  box-shadow: 0 8px 32px rgba(255, 23, 68, 0.4);
   z-index: 1000;
   overflow: hidden;
   text-align: center;
