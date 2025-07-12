@@ -154,7 +154,7 @@ $(document).ready(function() {
     } else {
       // Correct so far
       $(this).addClass('correct');
-      
+
       // Check if complete
       if (puzzleSequence.length === correctSequence.length) {
         // Puzzle solved!
@@ -219,6 +219,7 @@ function createHeartAnimation() {
       createHeart();
     }, i * 200);
   }
+
 }
 
 function createHeart() {
@@ -288,4 +289,83 @@ $(window).on('resize', function() {
   } else {
     $('.theme-toggle-mobile').remove();
   }
+});
+
+// Theme switcher logic
+$(document).ready(function() {
+  const themeSwitcher = $('#theme-switcher');
+  const body = $('body');
+
+  // Apply saved theme on page load
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+      body.addClass(savedTheme);
+  }
+
+  themeSwitcher.on('click', function() {
+      if (body.hasClass('theme-turquoise')) {
+          body.removeClass('theme-turquoise');
+          localStorage.removeItem('theme');
+      } else {
+          body.addClass('theme-turquoise');
+          localStorage.setItem('theme', 'theme-turquoise');
+      }
+
+      // Header text transition logic
+      let header = $('.intro h2 a b');
+      if (header.length) {
+          header.text('');
+          // Clear any previous timeout to avoid stacking
+          if (window.headerRevertTimeout) {
+              clearTimeout(window.headerRevertTimeout);
+          }
+          window.headerRevertTimeout = setTimeout(() => {
+              // Always revert to the original header text stored on page load
+              if (window.originalHeaderText !== undefined) {
+                  header.text(window.originalHeaderText);
+              }
+              window.headerRevertTimeout = null;
+          }, 30000);
+      }
+  });
+});
+
+// Password protection logic for secrets.html
+$(document).ready(function() {
+  const passwordButtons = $('.password-button');
+  const prompt = $('.password-prompt');
+  const animationArea = $('.animation-area');
+  const heart = $('.animation-area .heart');
+  let passwordSequence = [];
+  const correctSequence = ['JR', 'JZ', 'LB'];
+  let header = $('.intro h2 a b'); // Assuming header is within .intro h2 a b
+
+  passwordButtons.on('click', function() {
+      const key = $(this).data('key');
+      passwordSequence.push(key);
+
+      // Keep sequence length manageable
+      if (passwordSequence.length > correctSequence.length) {
+          passwordSequence.shift();
+      }
+
+      // Check if the sequence matches
+      if (passwordSequence.join(',') === correctSequence.join(',')) {
+          // Show and animate heart
+          heart.show();
+          animationArea.addClass('heart-animate');
+
+          // Change header text
+          const originalHeader = header.text();
+          header.text('');
+
+          // Revert header and animation after 30 seconds
+          setTimeout(() => {
+              header.text(originalHeader);
+              animationArea.removeClass('heart-animate');
+              heart.hide();
+              passwordSequence = []; // Reset sequence
+          }, 30000);
+      }
+  });
 });
