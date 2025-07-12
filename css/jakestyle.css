@@ -12,6 +12,19 @@
   --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Dark theme variables */
+[data-theme="dark"] {
+  --primary-bg: #1a1a2e; /* Deep Blue */
+  --content-bg: #16213e; /* Dark Navy */
+  --header-bg: #0f3460; /* Midnight Blue */
+  --sidebar-tab-bg: #533483; /* Deep Purple */
+  --sidebar-tab-hover-bg: #7952b3; /* Bright Purple */
+  --text-color: #e0e0e0;
+  --link-color: #7952b3;
+  --link-hover-color: #9b7bc6;
+  --border-color: #533483;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -422,6 +435,202 @@ ol li {
   margin-right: 10px;
 }
 
+/* Theme Toggle Button */
+.theme-toggle {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 25px;
+  background-color: var(--header-bg);
+  border: 3px solid var(--border-color);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  transition: all 0.3s ease;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.theme-toggle:hover {
+  transform: translateX(-50%) scale(1.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Puzzle Modal */
+.puzzle-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 2000;
+  animation: fadeIn 0.3s ease;
+}
+
+.puzzle-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--content-bg);
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  min-width: 300px;
+}
+
+.puzzle-hint {
+  font-size: 1.5em;
+  color: var(--text-color);
+  margin-bottom: 30px;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 2px;
+}
+
+.puzzle-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.puzzle-button {
+  padding: 15px 25px;
+  font-size: 1.2em;
+  font-weight: bold;
+  background-color: var(--sidebar-tab-bg);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.puzzle-button:hover {
+  background-color: var(--sidebar-tab-hover-bg);
+  transform: translateY(-2px);
+}
+
+.puzzle-button.correct {
+  animation: correctPulse 0.5s ease;
+}
+
+.puzzle-button.wrong {
+  animation: wrongShake 0.5s ease;
+}
+
+@keyframes correctPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); background-color: #4CAF50; }
+}
+
+@keyframes wrongShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+/* Heart Transition */
+.theme-transition-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1500;
+}
+
+.theme-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.theme-layer.new-theme {
+  opacity: 0;
+  clip-path: path('M0,0');
+}
+
+.theme-layer.new-theme.animating {
+  opacity: 1;
+  animation: heartExpand 0.8s ease-out forwards;
+}
+
+@keyframes heartExpand {
+  from {
+    clip-path: path('M50,50 L50,50 L50,50 Z');
+  }
+  to {
+    clip-path: path('M0,0 L100,0 L100,100 L0,100 Z');
+  }
+}
+
+/* Heart SVG for clip-path */
+.heart-clip {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* Message Popup */
+.message-popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--content-bg);
+  padding: 50px 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  z-index: 2100;
+  max-width: 450px;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.message-popup .close-popup {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-color);
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.message-popup .close-popup:hover {
+  opacity: 1;
+}
+
+.message-popup .message-text {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 1.4em;
+  line-height: 1.8;
+  margin-bottom: 25px;
+  color: var(--text-color);
+  letter-spacing: 0.5px;
+}
+
+.message-popup .signature {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 1.3em;
+  color: var(--link-color);
+  font-weight: bold;
+  margin-top: 20px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .wrap {
@@ -438,5 +647,21 @@ ol li {
   
   h4 {
     font-size: 1.2em;
+  }
+  
+  .theme-toggle {
+    top: 5px;
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+  
+  .puzzle-container {
+    padding: 30px;
+    min-width: 250px;
+  }
+  
+  .puzzle-buttons {
+    flex-direction: column;
+    gap: 15px;
   }
 }

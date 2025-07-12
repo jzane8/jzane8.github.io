@@ -101,3 +101,175 @@ $(document).ready(function() {
       }, 100);
   }
 });
+
+// Theme Management
+$(document).ready(function() {
+  // Initialize theme from localStorage
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  updateThemeIcon(savedTheme);
+  
+  // Create theme toggle button
+  if (!$('.theme-toggle').length) {
+      $('body').append('<button class="theme-toggle" aria-label="Toggle theme">For Sonia</button>');
+  }
+  
+  // Create puzzle modal
+  if (!$('.puzzle-modal').length) {
+      $('body').append(`
+          <div class="puzzle-modal">
+              <div class="puzzle-container">
+                  <div class="puzzle-hint">1.F 2.M 3.K</div>
+                  <div class="puzzle-buttons">
+                      <button class="puzzle-button" data-value="JR">JR</button>
+                      <button class="puzzle-button" data-value="LB">LB</button>
+                      <button class="puzzle-button" data-value="JZ">JZ</button>
+                  </div>
+              </div>
+          </div>
+      `);
+  }
+  
+  // Create heart SVG for clip-path
+  if (!$('#heart-svg').length) {
+      $('body').append(`
+          <svg id="heart-svg" width="0" height="0">
+              <defs>
+                  <clipPath id="heart-clip-path" clipPathUnits="objectBoundingBox">
+                      <path d="M0.5,0.9 C0.5,0.9 0.1,0.6 0.1,0.4 C0.1,0.2 0.2,0.1 0.35,0.1 C0.45,0.1 0.5,0.15 0.5,0.25 C0.5,0.15 0.55,0.1 0.65,0.1 C0.8,0.1 0.9,0.2 0.9,0.4 C0.9,0.6 0.5,0.9 0.5,0.9 Z"/>
+                  </clipPath>
+              </defs>
+          </svg>
+      `);
+  }
+  
+  // Create message popup
+  if (!$('.message-popup').length) {
+      $('body').append(`
+          <div class="message-popup">
+              <span class="close-popup">&times;</span>
+              <p class="message-text">How does a movie sound? I'll buy tickets and provide optional commentary.</p>
+              <p class="signature">-J</p>
+          </div>
+      `);
+  }
+  
+  // Puzzle logic
+  let puzzleSequence = [];
+  const correctSequence = ['JR', 'JZ', 'LB'];
+  
+  // Theme toggle click handler
+  $('.theme-toggle').on('click', function(e) {
+      e.preventDefault();
+      puzzleSequence = []; // Reset sequence
+      $('.puzzle-modal').fadeIn(300);
+  });
+  
+  // Puzzle button click handler
+  $('.puzzle-button').on('click', function() {
+      const value = $(this).data('value');
+      puzzleSequence.push(value);
+      
+      // Check if the current sequence matches the start of the correct sequence
+      const isCorrectSoFar = puzzleSequence.every((val, index) => val === correctSequence[index]);
+      
+      if (!isCorrectSoFar) {
+          // Wrong sequence
+          $(this).addClass('wrong');
+          setTimeout(() => {
+              $('.puzzle-button').removeClass('wrong correct');
+              puzzleSequence = [];
+          }, 500);
+      } else {
+          // Correct so far
+          $(this).addClass('correct');
+          
+          // Check if complete
+          if (puzzleSequence.length === correctSequence.length) {
+              // Puzzle solved!
+              setTimeout(() => {
+                  $('.puzzle-modal').fadeOut(300, function() {
+                      $('.puzzle-button').removeClass('correct');
+                      startHeartTransition();
+                      // Show message popup after puzzle is solved
+                      setTimeout(() => {
+                          $('.message-popup').fadeIn(300);
+                      }, 900);
+                  });
+              }, 500);
+          }
+      }
+  });
+  
+  // Close puzzle modal on background click
+  $('.puzzle-modal').on('click', function(e) {
+      if (e.target === this) {
+          $(this).fadeOut(300);
+          puzzleSequence = [];
+          $('.puzzle-button').removeClass('wrong correct');
+      }
+  });
+  
+  // Close message popup
+  $('.close-popup').on('click', function() {
+      $('.message-popup').fadeOut(300);
+  });
+});
+
+// Heart transition animation
+function startHeartTransition() {
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  
+  // Get button position for animation origin
+  const button = $('.theme-toggle')[0];
+  const rect = button.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  
+  // Create transition container
+  const transitionContainer = $('<div class="theme-transition-container"></div>');
+  
+  // Create the heart animation element
+  const heartElement = $(`
+      <div style="
+          position: absolute;
+          top: ${centerY}px;
+          left: ${centerX}px;
+          width: 0;
+          height: 0;
+          background-color: ${newTheme === 'dark' ? '#1a1a2e' : '#AFEEEE'};
+          clip-path: url(#heart-clip-path);
+          transform: translate(-50%, -50%);
+          transition: all 0.8s ease-out;
+      "></div>
+  `);
+  
+  transitionContainer.append(heartElement);
+  $('body').append(transitionContainer);
+  
+  // Start the animation
+  setTimeout(() => {
+      heartElement.css({
+          width: Math.max(window.innerWidth, window.innerHeight) * 2 + 'px',
+          height: Math.max(window.innerWidth, window.innerHeight) * 2 + 'px'
+      });
+  }, 50);
+  
+  // Change theme midway through animation
+  setTimeout(() => {
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
+  }, 400);
+  
+  // Clean up after animation
+  setTimeout(() => {
+      transitionContainer.remove();
+  }, 850);
+}
+
+// Update theme icon
+function updateThemeIcon(theme) {
+  // No longer using icons, just keeping the "For Sonia" text
+}
