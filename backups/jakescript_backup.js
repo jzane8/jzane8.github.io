@@ -8,12 +8,7 @@ $(document).ready(function() {
   
   // Create theme toggle button if it doesn't exist
   if (!$('.theme-toggle').length) {
-    $('body').append('<button class="theme-toggle" aria-label="Toggle theme"><span>For Sonia</span></button>');
-  }
-  
-  // Create mobile theme toggle button if it doesn't exist
-  if (!$('.theme-toggle-mobile').length && isMobile()) {
-    $('body').append('<button class="theme-toggle-mobile" aria-label="Toggle theme"><span>For Sonia</span></button>');
+    $('body').append('<button class="theme-toggle" aria-label="Toggle theme">For Sonia</button>');
   }
   
   // Create puzzle modal if it doesn't exist
@@ -37,8 +32,8 @@ $(document).ready(function() {
     $('body').append(`
       <div class="message-popup">
         <span class="close-popup">&times;</span>
-        <p class="message-text">Couldn't decide on a cool enough date idea so I procrastinated by making this. Do you want to go see an action movie? I'll at least pick the tickets.</p>
-        <p class="signature">-J :)</p>
+        <p class="message-text">How does a movie sound? I'll buy tickets and provide optional commentary.</p>
+        <p class="signature">-J</p>
       </div>
     `);
   }
@@ -58,39 +53,7 @@ $(document).ready(function() {
       }, 500);
     }
   });
-  
-  // Enhanced scroll reveal animation
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('revealed');
-      }
-    });
-  }, observerOptions);
-
-  document.querySelectorAll('.scroll-reveal').forEach(el => {
-    observer.observe(el);
-  });
-  
-  // Smooth hover effects for work items
-  $('.work-item').on('mouseenter', function() {
-    $(this).css('transform', 'translateX(10px) translateY(-5px)');
-  });
-  
-  $('.work-item').on('mouseleave', function() {
-    $(this).css('transform', 'translateX(0) translateY(0)');
-  });
 });
-
-// Device detection
-function isMobile() {
-  return window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-}
 
 // Function to toggle intro section
 function hideIntro() {
@@ -123,14 +86,14 @@ function setActivePage() {
   }
 }
 
-// Theme Management and Puzzle Logic
+// Theme Management
 $(document).ready(function() {
   // Puzzle logic
   let puzzleSequence = [];
   const correctSequence = ['JR', 'JZ', 'LB'];
   
-  // Theme toggle click handler for both desktop and mobile buttons
-  $('.theme-toggle, .theme-toggle-mobile').on('click', function(e) {
+  // Theme toggle click handler
+  $('.theme-toggle').on('click', function(e) {
     e.preventDefault();
     puzzleSequence = []; // Reset sequence
     $('.puzzle-modal').fadeIn(300);
@@ -161,13 +124,11 @@ $(document).ready(function() {
         setTimeout(() => {
           $('.puzzle-modal').fadeOut(300, function() {
             $('.puzzle-button').removeClass('correct');
-            // Create heart animation
-            createHeartAnimation();
-            // Toggle to Sonia theme
-            toggleToSoniaTheme();
+            // Simple theme toggle
+            toggleTheme();
             // Show message popup after theme change
             setTimeout(() => {
-              showCustomPopup();
+              $('.message-popup').fadeIn(300);
             }, 400);
           });
         }, 500);
@@ -206,55 +167,6 @@ function toggleTheme() {
   localStorage.setItem('theme', newTheme);
 }
 
-// Toggle to Sonia theme
-function toggleToSoniaTheme() {
-  document.documentElement.setAttribute('data-theme', 'sonia');
-  localStorage.setItem('theme', 'sonia');
-}
-
-// Create heart animation
-function createHeartAnimation() {
-  for (let i = 0; i < 5; i++) {
-    setTimeout(() => {
-      createHeart();
-    }, i * 200);
-  }
-}
-
-function createHeart() {
-  const heart = document.createElement('div');
-  heart.innerHTML = '❤️';
-  heart.style.position = 'fixed';
-  heart.style.left = Math.random() * window.innerWidth + 'px';
-  heart.style.top = window.innerHeight + 'px';
-  heart.style.fontSize = '16px';
-  heart.style.zIndex = '9999';
-  heart.style.pointerEvents = 'none';
-  heart.style.transition = 'all 2s ease-out';
-  heart.style.opacity = '0.7';
-  
-  document.body.appendChild(heart);
-  
-  // Animate heart floating up subtly
-  setTimeout(() => {
-    heart.style.top = window.innerHeight - 200 + 'px';
-    heart.style.opacity = '0';
-    heart.style.transform = 'translateX(' + (Math.random() * 100 - 50) + 'px)';
-  }, 100);
-  
-  // Remove heart after animation
-  setTimeout(() => {
-    if (heart.parentNode) {
-      heart.parentNode.removeChild(heart);
-    }
-  }, 2500);
-}
-
-// Show custom popup with improved animation
-function showCustomPopup() {
-  $('.message-popup').fadeIn(300);
-}
-
 // TransparenC page specific functions
 function openMacModal() {
   document.getElementById('macModal').style.display = 'block';
@@ -271,21 +183,3 @@ window.onclick = function(event) {
     modal.style.display = 'none';
   }
 }
-
-// Handle window resize
-$(window).on('resize', function() {
-  // Add or remove mobile button based on screen size
-  if (isMobile()) {
-    if (!$('.theme-toggle-mobile').length) {
-      $('body').append('<button class="theme-toggle-mobile" aria-label="Toggle theme"><span>For Sonia</span></button>');
-      // Re-attach event handlers
-      $('.theme-toggle-mobile').on('click', function(e) {
-        e.preventDefault();
-        puzzleSequence = [];
-        $('.puzzle-modal').fadeIn(300);
-      });
-    }
-  } else {
-    $('.theme-toggle-mobile').remove();
-  }
-});
