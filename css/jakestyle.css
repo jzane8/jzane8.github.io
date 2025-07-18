@@ -1028,6 +1028,54 @@ li {
   border-width: 0;
 }
 
+/* Facebook Video Embed */
+.facebook-embed-container {
+  position: relative;
+  margin: 2rem auto;
+  max-width: 100%;
+  text-align: center;
+}
+
+#sunbeamvid, .facebook-video {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  z-index: 5;
+  position: relative;
+  overflow: hidden;
+}
+
+.fallback-message {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  font-size: var(--font-size-sm);
+}
+
+.fallback-message p {
+  margin: 0;
+}
+
+.fallback-message a {
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+#onrecord {
+  position: relative;
+  z-index: 1;
+}
+
+#onrecord1 {
+  max-width: 100%;
+  height: auto;
+  margin: 1rem 0;
+  border-radius: 8px;
+}
+
 /* Print Styles */
 @media print {
   .theme-toggle,
