@@ -37,8 +37,7 @@ $(document).ready(function() {
     $('body').append(`
       <div class="message-popup">
         <span class="close-popup">&times;</span>
-        <p class="message-text">Couldn't decide on a cool enough date idea so I procrastinated by making this. Do you want to go see an action movie? I'll at least pick the tickets.</p>
-        <p class="signature">-J :)</p>
+       
       </div>
     `);
   }
