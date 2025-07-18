@@ -8,12 +8,12 @@ $(document).ready(function() {
   
   // Create theme toggle button if it doesn't exist
   if (!$('.theme-toggle').length) {
-    $('body').append('<button class="theme-toggle" aria-label="Toggle theme"><span>For Sonia</span></button>');
+    $('body').append('<button class="theme-toggle" aria-label="Toggle theme"><span>For S</span></button>');
   }
   
   // Create mobile theme toggle button if it doesn't exist
   if (!$('.theme-toggle-mobile').length && isMobile()) {
-    $('body').append('<button class="theme-toggle-mobile" aria-label="Toggle theme"><span>For Sonia</span></button>');
+    $('body').append('<button class="theme-toggle-mobile" aria-label="Toggle theme"><span>For S</span></button>');
   }
   
   // Create puzzle modal if it doesn't exist
@@ -277,7 +277,7 @@ $(window).on('resize', function() {
   // Add or remove mobile button based on screen size
   if (isMobile()) {
     if (!$('.theme-toggle-mobile').length) {
-      $('body').append('<button class="theme-toggle-mobile" aria-label="Toggle theme"><span>For Sonia</span></button>');
+      $('body').append('<button class="theme-toggle-mobile" aria-label="Toggle theme"><span>For S</span></button>');
       // Re-attach event handlers
       $('.theme-toggle-mobile').on('click', function(e) {
         e.preventDefault();
