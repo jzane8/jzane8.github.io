@@ -61,17 +61,12 @@
             margin-bottom: 30px;
         }
 
-        .wheel {
+        .wheel-svg {
             width: 100%;
             height: 100%;
-            border-radius: 50%;
-            border: 8px solid #8B4513;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-            position: relative;
-            overflow: hidden;
-            background: white;
             transform-origin: center center;
             transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            filter: drop-shadow(0 8px 25px rgba(0,0,0,0.3));
         }
 
         .wheel-pointer {
@@ -88,58 +83,16 @@
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
 
-        .wheel-section {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 200px;
-            height: 200px;
-            transform-origin: 0 0;
-            overflow: hidden;
-        }
-
-        .wheel-svg {
-    width: 100%;
-    height: 100%;
-    transform-origin: center center;
-    transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-    filter: drop-shadow(0 8px 25px rgba(0,0,0,0.3));
-}
-
-.section-text {
-    font-family: 'Arial', sans-serif;
-    font-weight: bold;
-    fill: white;
-    text-anchor: middle;
-    dominant-baseline: central;
-    paint-order: stroke fill;
-    stroke: rgba(0,0,0,0.8);
-    stroke-width: 1px;
-    pointer-events: none;
-}
-
-        .section-content {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
         .section-text {
-            color: white;
+            font-family: 'Arial', sans-serif;
             font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-            text-align: center;
-            max-width: 120px;
-            line-height: 1.1;
-            word-wrap: break-word;
+            fill: white;
+            text-anchor: middle;
+            dominant-baseline: central;
+            paint-order: stroke fill;
+            stroke: rgba(0,0,0,0.8);
+            stroke-width: 1px;
             pointer-events: none;
-            margin-left: 60px;
-            margin-top: -20px;
         }
 
         .controls {
@@ -347,11 +300,11 @@
         <div class="game-area">
             <div class="wheel-container">
                 <div class="wheel-wrapper">
-    <div class="wheel-pointer"></div>
-    <svg class="wheel-svg" id="wheelSvg" viewBox="0 0 400 400">
-        <!-- Wheel sections will be generated here -->
-    </svg>
-</div>
+                    <div class="wheel-pointer"></div>
+                    <svg class="wheel-svg" id="wheelSvg" viewBox="0 0 400 400">
+                        <!-- Wheel sections will be generated here -->
+                    </svg>
+                </div>
                 
                 <div class="controls">
                     <button class="spin-button" id="spinBtn">SPIN THE WHEEL!</button>
@@ -447,7 +400,7 @@ Share an embarrassing story,20,#FFEAA7,high"></textarea>
     <script>
         class WheelOfFortune {
             constructor() {
-                this.wheel = document.getElementById('wheel');
+                this.wheelSvg = document.getElementById('wheelSvg');
                 this.spinBtn = document.getElementById('spinBtn');
                 this.vetoBtn = document.getElementById('vetoBtn');
                 this.coinFlipBtn = document.getElementById('coinFlipBtn');
@@ -598,106 +551,110 @@ Share an embarrassing story,20,#FFEAA7,high`;
                 this.vetoBtn.style.display = 'none';
                 this.resultDisplay.innerHTML = '<p>Wheel updated! Click "SPIN THE WHEEL!" to play.</p>';
             }
+            
             renderWheel() {
-    const svg = document.getElementById('wheelSvg');
-    if (!svg) {
-        // Create SVG element if it doesn't exist
-        const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svgElement.id = 'wheelSvg';
-        svgElement.setAttribute('viewBox', '0 0 400 400');
-        svgElement.className = 'wheel-svg';
-        this.wheel.appendChild(svgElement);
-    }
-    
-    const wheelSvg = document.getElementById('wheelSvg');
-    wheelSvg.innerHTML = '';
-    
-    const centerX = 200;
-    const centerY = 200;
-    const radius = 180;
-    
-    let currentAngle = 0;
-    
-    this.wheelData.forEach((section, index) => {
-        const sectionAngle = (section.percentage / 100) * 360;
-        const startAngle = currentAngle;
-        const endAngle = currentAngle + sectionAngle;
-        
-        // Create path for triangular section
-        const startAngleRad = (startAngle * Math.PI) / 180;
-        const endAngleRad = (endAngle * Math.PI) / 180;
-        
-        const x1 = centerX + radius * Math.cos(startAngleRad);
-        const y1 = centerY + radius * Math.sin(startAngleRad);
-        const x2 = centerX + radius * Math.cos(endAngleRad);
-        const y2 = centerY + radius * Math.sin(endAngleRad);
-        
-        const largeArcFlag = sectionAngle > 180 ? 1 : 0;
-        
-        const pathData = [
-            `M ${centerX} ${centerY}`,
-            `L ${x1} ${y1}`,
-            `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
-            'Z'
-        ].join(' ');
-        
-        // Create section path
-        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', pathData);
-        path.setAttribute('fill', section.color);
-        path.setAttribute('stroke', '#fff');
-        path.setAttribute('stroke-width', '2');
-        wheelSvg.appendChild(path);
-        
-        // Add text along the arc
-        const midAngle = (startAngle + endAngle) / 2;
-        const textRadius = radius * 0.7; // Position text at 70% of radius
-        const textAngle = (midAngle * Math.PI) / 180;
-        
-        const textX = centerX + textRadius * Math.cos(textAngle);
-        const textY = centerY + textRadius * Math.sin(textAngle);
-        
-        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        text.setAttribute('x', textX);
-        text.setAttribute('y', textY);
-        text.setAttribute('text-anchor', 'middle');
-        text.setAttribute('dominant-baseline', 'central');
-        text.setAttribute('fill', 'white');
-        text.setAttribute('font-weight', 'bold');
-        text.setAttribute('font-family', 'Arial, sans-serif');
-        text.setAttribute('paint-order', 'stroke fill');
-        text.setAttribute('stroke', 'rgba(0,0,0,0.8)');
-        text.setAttribute('stroke-width', '1px');
-        text.className = `section-text severity-${section.severity}`;
-        
-        // Rotate text to follow the wheel's curve
-        text.setAttribute('transform', `rotate(${midAngle}, ${textX}, ${textY})`);
-        
-        // Handle long text by breaking it into multiple lines
-        const words = section.text.split(' ');
-        if (words.length > 2) {
-            const tspan1 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
-            const tspan2 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
-            
-            tspan1.textContent = words.slice(0, Math.ceil(words.length/2)).join(' ');
-            tspan2.textContent = words.slice(Math.ceil(words.length/2)).join(' ');
-            
-            tspan1.setAttribute('x', textX);
-            tspan1.setAttribute('dy', '-0.3em');
-            tspan2.setAttribute('x', textX);
-            tspan2.setAttribute('dy', '1.2em');
-            
-            text.appendChild(tspan1);
-            text.appendChild(tspan2);
-        } else {
-            text.textContent = section.text;
-        }
-        
-        wheelSvg.appendChild(text);
-        currentAngle += sectionAngle;
-    });
-}
-
+                // Clear existing content
+                this.wheelSvg.innerHTML = '';
+                
+                // Reset any previous rotation
+                this.wheelSvg.style.transition = 'none';
+                this.wheelSvg.style.transform = `rotate(${this.currentRotation}deg)`;
+                
+                const centerX = 200;
+                const centerY = 200;
+                const radius = 180;
+                
+                let currentAngle = -90; // Start from top (12 o'clock position)
+                
+                this.wheelData.forEach((section, index) => {
+                    const sectionAngle = (section.percentage / 100) * 360;
+                    const startAngle = currentAngle;
+                    const endAngle = currentAngle + sectionAngle;
+                    
+                    // Create path for triangular section
+                    const startAngleRad = (startAngle * Math.PI) / 180;
+                    const endAngleRad = (endAngle * Math.PI) / 180;
+                    
+                    const x1 = centerX + radius * Math.cos(startAngleRad);
+                    const y1 = centerY + radius * Math.sin(startAngleRad);
+                    const x2 = centerX + radius * Math.cos(endAngleRad);
+                    const y2 = centerY + radius * Math.sin(endAngleRad);
+                    
+                    const largeArcFlag = sectionAngle > 180 ? 1 : 0;
+                    
+                    const pathData = [
+                        `M ${centerX} ${centerY}`,
+                        `L ${x1} ${y1}`,
+                        `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
+                        'Z'
+                    ].join(' ');
+                    
+                    // Create section path
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    path.setAttribute('d', pathData);
+                    path.setAttribute('fill', section.color);
+                    path.setAttribute('stroke', '#fff');
+                    path.setAttribute('stroke-width', '2');
+                    this.wheelSvg.appendChild(path);
+                    
+                    // Add text along the arc
+                    const midAngle = (startAngle + endAngle) / 2;
+                    const textRadius = radius * 0.65; // Position text at 65% of radius
+                    const textAngle = (midAngle * Math.PI) / 180;
+                    
+                    const textX = centerX + textRadius * Math.cos(textAngle);
+                    const textY = centerY + textRadius * Math.sin(textAngle);
+                    
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', textX);
+                    text.setAttribute('y', textY);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('dominant-baseline', 'central');
+                    text.setAttribute('fill', 'white');
+                    text.setAttribute('font-weight', 'bold');
+                    text.setAttribute('font-family', 'Arial, sans-serif');
+                    text.setAttribute('paint-order', 'stroke fill');
+                    text.setAttribute('stroke', 'rgba(0,0,0,0.8)');
+                    text.setAttribute('stroke-width', '1px');
+                    text.setAttribute('class', `section-text severity-${section.severity}`);
+                    
+                    // Rotate text to follow the wheel's curve (only if needed for readability)
+                    let textRotation = midAngle + 90;
+                    if (textRotation > 90 && textRotation < 270) {
+                        textRotation += 180; // Flip text to keep it readable
+                    }
+                    text.setAttribute('transform', `rotate(${textRotation}, ${textX}, ${textY})`);
+                    
+                    // Handle long text by breaking it into multiple lines
+                    const words = section.text.split(' ');
+                    if (words.length > 2 && section.text.length > 15) {
+                        const tspan1 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+                        const tspan2 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+                        
+                        const midPoint = Math.ceil(words.length / 2);
+                        tspan1.textContent = words.slice(0, midPoint).join(' ');
+                        tspan2.textContent = words.slice(midPoint).join(' ');
+                        
+                        tspan1.setAttribute('x', textX);
+                        tspan1.setAttribute('dy', '-0.4em');
+                        tspan2.setAttribute('x', textX);
+                        tspan2.setAttribute('dy', '1.2em');
+                        
+                        text.appendChild(tspan1);
+                        text.appendChild(tspan2);
+                    } else {
+                        text.textContent = section.text;
+                    }
+                    
+                    this.wheelSvg.appendChild(text);
+                    currentAngle += sectionAngle;
+                });
+                
+                // Re-enable transitions after a brief delay
+                setTimeout(() => {
+                    this.wheelSvg.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+                }, 50);
+            }
             
             updateSeverityStyles() {
                 const severities = ['low', 'medium', 'high'];
@@ -739,6 +696,7 @@ Share an embarrassing story,20,#FFEAA7,high`;
                 this.isSpinning = true;
                 this.spinBtn.disabled = true;
                 this.vetoBtn.style.display = 'none';
+                this.resultDisplay.innerHTML = '<p>Spinning...</p>';
                 
                 // Generate random spin (4-8 full rotations plus random angle)
                 const spins = 4 + Math.random() * 4;
@@ -746,7 +704,10 @@ Share an embarrassing story,20,#FFEAA7,high`;
                 const totalRotation = spins * 360 + randomAngle;
                 
                 this.currentRotation += totalRotation;
-                this.wheel.style.transform = `rotate(${this.currentRotation}deg)`;
+                
+                // Apply rotation with proper CSS transform
+                this.wheelSvg.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+                this.wheelSvg.style.transform = `rotate(${this.currentRotation}deg)`;
                 
                 setTimeout(() => {
                     this.isSpinning = false;
@@ -772,11 +733,13 @@ Share an embarrassing story,20,#FFEAA7,high`;
             }
             
             getSelectedSection(angle) {
+                // Adjust for starting position (-90 degrees)
+                const adjustedAngle = (angle + 90) % 360;
                 let currentAngle = 0;
                 
                 for (let i = 0; i < this.wheelData.length; i++) {
                     const sectionAngle = (this.wheelData[i].percentage / 100) * 360;
-                    if (angle >= currentAngle && angle < currentAngle + sectionAngle) {
+                    if (adjustedAngle >= currentAngle && adjustedAngle < currentAngle + sectionAngle) {
                         return i;
                     }
                     currentAngle += sectionAngle;
