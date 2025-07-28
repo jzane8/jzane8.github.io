@@ -345,6 +345,7 @@
                 <h2>Admin Panel</h2>
                 
                 <div id="validationMessage"></div>
+                <button id="fixCsvBtn" style="display:none; margin-bottom:10px; padding:8px 16px; background:#FFA500; color:white; border:none; border-radius:5px; cursor:pointer;">🔧 Attempt to Fix CSV</button>
                 
                 <h3>CSV Data (prompt_text, percentage_size, color, severity)</h3>
                 <textarea class="csv-input" id="csvInput" placeholder="Example:
@@ -453,6 +454,7 @@ Share an embarrassing story,2,#FFEAA7,high"></textarea>
         this.updateBtn.addEventListener('click', () => this.updateWheelData());
         this.csvInput.addEventListener('input', () => this.validateCSV());
         this.maxSlicesInput.addEventListener('change', () => this.updateWheelData()); // ✅ NEW
+        document.getElementById('fixCsvBtn').addEventListener('click', () => this.autoFixCSV());
       }
 
       loadDefaultData() {
@@ -523,6 +525,14 @@ Share an embarrassing story,2,#FFEAA7,high`;
         this.validationMessage.className =
           type === 'error' ? 'validation-error' :
           type === 'success' ? 'validation-success' : '';
+        
+        // Show or hide the Fix CSV button based on error state
+        const fixBtn = document.getElementById('fixCsvBtn');
+        if (type === 'error') {
+          fixBtn.style.display = 'inline-block';
+        } else {
+          fixBtn.style.display = 'none';
+        }
       }
 
       updateWheelData() {
@@ -798,6 +808,80 @@ Share an embarrassing story,2,#FFEAA7,high`;
             toggleAdmin() {
                 const content = this.adminContent;
                 content.style.display = content.style.display === 'none' ? 'block' : 'none';
+            }
+
+            autoFixCSV() {
+                const csvText = this.csvInput.value.trim();
+                if (!csvText) return;
+
+                try {
+                    const parsed = Papa.parse(csvText, { skipEmptyLines: true });
+                    const data = parsed.data;
+                    
+                    const fixedRows = data.map((row, index) => {
+                        // Ensure we have exactly 4 columns
+                        while (row.length < 4) {
+                            row.push('');
+                        }
+                        if (row.length > 4) {
+                            row = row.slice(0, 4);
+                        }
+
+                        let [text, weight, color, severity] = row;
+
+                        // Fix text - if empty, provide default
+                        if (!text || !text.trim()) {
+                            text = `Task ${index + 1}`;
+                        }
+
+                        // Fix weight - ensure it's a valid number between 1-10
+                        const weightNum = parseInt(weight);
+                        if (isNaN(weightNum) || weightNum < 1 || weightNum > 10) {
+                            weight = '5'; // Default weight
+                        } else {
+                            weight = weightNum.toString();
+                        }
+
+                        // Fix color - ensure it's a valid hex color
+                        if (!color || !/^#[0-9A-Fa-f]{6}$/.test(color.trim())) {
+                            // Generate a random color
+                            const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F'];
+                            color = colors[index % colors.length];
+                        }
+
+                        // Fix severity - ensure it's valid
+                        if (!severity || !['low', 'medium', 'high'].includes(severity.trim().toLowerCase())) {
+                            severity = 'medium'; // Default severity
+                        } else {
+                            severity = severity.trim().toLowerCase();
+                        }
+
+                        return [text.trim(), weight, color.trim(), severity];
+                    });
+
+                    // Update the CSV input with fixed data
+                    const fixedCSV = fixedRows.map(row => row.join(',')).join('\n');
+                    this.csvInput.value = fixedCSV;
+
+                    // Re-validate to show success message
+                    this.validateCSV();
+
+                } catch (error) {
+                    this.showValidationMessage('Unable to auto-fix CSV: ' + error.message, 'error');
+                }
+            }
+
+            setupSeverityListeners() {
+                const severities = ['low', 'medium', 'high'];
+                severities.forEach(severity => {
+                    const fontSizeEl = document.getElementById(`${severity}FontSize`);
+                    const fontWeightEl = document.getElementById(`${severity}FontWeight`);
+                    const textTransformEl = document.getElementById(`${severity}TextTransform`);
+                    
+                    if (fontSizeEl) fontSizeEl.addEventListener('change', () => this.updateSeverityStyles());
+                    if (fontWeightEl) fontWeightEl.addEventListener('change', () => this.updateSeverityStyles());
+                    if (textTransformEl) textTransformEl.addEventListener('change', () => this.updateSeverityStyles());
+                });
             }
         }
         
