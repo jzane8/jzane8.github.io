@@ -555,40 +555,40 @@ Share an embarrassing story,20,#FFEAA7,high`;
             renderWheel() {
                 // Clear existing content
                 this.wheelSvg.innerHTML = '';
-                
+
                 // Reset any previous rotation
                 this.wheelSvg.style.transition = 'none';
                 this.wheelSvg.style.transform = `rotate(${this.currentRotation}deg)`;
-                
+
                 const centerX = 200;
                 const centerY = 200;
                 const radius = 180;
-                
+
                 let currentAngle = -90; // Start from top (12 o'clock position)
-                
+
                 this.wheelData.forEach((section, index) => {
                     const sectionAngle = (section.percentage / 100) * 360;
                     const startAngle = currentAngle;
                     const endAngle = currentAngle + sectionAngle;
-                    
+
                     // Create path for triangular section
                     const startAngleRad = (startAngle * Math.PI) / 180;
                     const endAngleRad = (endAngle * Math.PI) / 180;
-                    
+
                     const x1 = centerX + radius * Math.cos(startAngleRad);
                     const y1 = centerY + radius * Math.sin(startAngleRad);
                     const x2 = centerX + radius * Math.cos(endAngleRad);
                     const y2 = centerY + radius * Math.sin(endAngleRad);
-                    
+
                     const largeArcFlag = sectionAngle > 180 ? 1 : 0;
-                    
+
                     const pathData = [
                         `M ${centerX} ${centerY}`,
                         `L ${x1} ${y1}`,
                         `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
                         'Z'
                     ].join(' ');
-                    
+
                     // Create section path
                     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                     path.setAttribute('d', pathData);
@@ -596,65 +596,76 @@ Share an embarrassing story,20,#FFEAA7,high`;
                     path.setAttribute('stroke', '#fff');
                     path.setAttribute('stroke-width', '2');
                     this.wheelSvg.appendChild(path);
-                    
+
                     // Add text along the arc
                     const midAngle = (startAngle + endAngle) / 2;
-                    const textRadius = radius * 0.65; // Position text at 65% of radius
+                    const textRadius = radius * 0.65;
                     const textAngle = (midAngle * Math.PI) / 180;
-                    
+
                     const textX = centerX + textRadius * Math.cos(textAngle);
                     const textY = centerY + textRadius * Math.sin(textAngle);
-                    
+
+                    const arcLength = 2 * Math.PI * textRadius * (sectionAngle / 360);
+
+                    // Start with severity font size
+                    const severityFontSize = parseInt(document.getElementById(`${section.severity}FontSize`).value) || 14;
+                    let fontSize = severityFontSize;
+                    const minFontSize = 8;
+
+                    const tempText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    tempText.setAttribute('font-size', fontSize);
+                    tempText.setAttribute('font-family', 'Arial');
+                    tempText.textContent = section.text;
+                    this.wheelSvg.appendChild(tempText);
+                    let bbox = tempText.getBBox();
+                    this.wheelSvg.removeChild(tempText);
+
+                    while (bbox.width > arcLength && fontSize > minFontSize) {
+                        fontSize -= 1;
+                        tempText.setAttribute('font-size', fontSize);
+                        this.wheelSvg.appendChild(tempText);
+                        bbox = tempText.getBBox();
+                        this.wheelSvg.removeChild(tempText);
+                    }
+
                     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                     text.setAttribute('x', textX);
                     text.setAttribute('y', textY);
                     text.setAttribute('text-anchor', 'middle');
                     text.setAttribute('dominant-baseline', 'central');
-                    text.setAttribute('fill', 'white');
-                    text.setAttribute('font-weight', 'bold');
                     text.setAttribute('font-family', 'Arial, sans-serif');
+                    text.setAttribute('font-weight', 'bold');
+                    text.setAttribute('fill', 'white');
+                    text.setAttribute('font-size', fontSize);
                     text.setAttribute('paint-order', 'stroke fill');
                     text.setAttribute('stroke', 'rgba(0,0,0,0.8)');
                     text.setAttribute('stroke-width', '1px');
-                    text.setAttribute('class', `section-text severity-${section.severity}`);
-                    
-                    // Rotate text to follow the wheel's curve (only if needed for readability)
+
                     let textRotation = midAngle + 90;
                     if (textRotation > 90 && textRotation < 270) {
-                        textRotation += 180; // Flip text to keep it readable
+                        textRotation += 180;
                     }
                     text.setAttribute('transform', `rotate(${textRotation}, ${textX}, ${textY})`);
-                    
-                    // Handle long text by breaking it into multiple lines
-                    const words = section.text.split(' ');
-                    if (words.length > 2 && section.text.length > 15) {
-                        const tspan1 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
-                        const tspan2 = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
-                        
-                        const midPoint = Math.ceil(words.length / 2);
-                        tspan1.textContent = words.slice(0, midPoint).join(' ');
-                        tspan2.textContent = words.slice(midPoint).join(' ');
-                        
-                        tspan1.setAttribute('x', textX);
-                        tspan1.setAttribute('dy', '-0.4em');
-                        tspan2.setAttribute('x', textX);
-                        tspan2.setAttribute('dy', '1.2em');
-                        
-                        text.appendChild(tspan1);
-                        text.appendChild(tspan2);
+
+                    if (fontSize <= minFontSize) {
+                        text.textContent = '...';
+                        const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+                        title.textContent = section.text;
+                        text.appendChild(title);
                     } else {
                         text.textContent = section.text;
                     }
-                    
+
                     this.wheelSvg.appendChild(text);
                     currentAngle += sectionAngle;
                 });
-                
+
                 // Re-enable transitions after a brief delay
                 setTimeout(() => {
                     this.wheelSvg.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
                 }, 50);
             }
+
             
             updateSeverityStyles() {
                 const severities = ['low', 'medium', 'high'];
