@@ -453,54 +453,53 @@ Share an embarrassing story,20,#FFEAA7,high`;
       validateCSV() {
         const csvText = this.csvInput.value.trim();
         if (!csvText) {
-          this.showValidationMessage('CSV cannot be empty', 'error');
-          return false;
+            this.showValidationMessage('CSV cannot be empty', 'error');
+            return false;
         }
 
         try {
-          const parsed = Papa.parse(csvText, { skipEmptyLines: true });
-          const data = parsed.data;
+            const parsed = Papa.parse(csvText, { skipEmptyLines: true });
+            const data = parsed.data;
 
-          if (data.length === 0) {
+            if (data.length === 0) {
             this.showValidationMessage('No valid data found', 'error');
             return false;
-          }
-
-          const errors = [];
-          let totalPercentage = 0;
-
-          data.forEach((row, index) => {
-            if (row.length !== 4) {
-              errors.push(`Row ${index + 1}: Must have exactly 4 columns`);
-              return;
             }
 
-            const [text, percentage, color, severity] = row;
-            const percentNum = parseFloat(percentage);
+            const errors = [];
+            data.forEach((row, index) => {
+            if (row.length !== 4) {
+                errors.push(`Row ${index + 1}: Must have exactly 4 columns`);
+                return;
+            }
 
-            if (!text.trim()) errors.push(`Row ${index + 1}: Text cannot be empty`);
-            if (isNaN(percentNum) || percentNum <= 0) errors.push(`Row ${index + 1}: Invalid percentage`);
-            else totalPercentage += percentNum;
+            const [text, weight, color, severity] = row;
+            const weightNum = parseInt(weight);
+
+            if (!text.trim()) errors.push(`Row ${index + 1}: Prompt text cannot be empty`);
+            if (isNaN(weightNum) || weightNum < 1 || weightNum > 10)
+                errors.push(`Row ${index + 1}: Weight must be between 1 and 10`);
 
             if (!/^#[0-9A-Fa-f]{6}$/.test(color.trim()))
-              errors.push(`Row ${index + 1}: Invalid color format`);
+                errors.push(`Row ${index + 1}: Invalid hex color format`);
 
             if (!['low', 'medium', 'high'].includes(severity.trim()))
-              errors.push(`Row ${index + 1}: Invalid severity value`);
-          });
+                errors.push(`Row ${index + 1}: Severity must be low, medium, or high`);
+            });
 
-          if (errors.length > 0) {
+            if (errors.length > 0) {
             this.showValidationMessage(errors.join('<br>'), 'error');
             return false;
-          }
+            }
 
-          this.showValidationMessage('CSV validation successful!', 'success');
-          return true;
-        } catch (e) {
-          this.showValidationMessage(`CSV parsing error: ${e.message}`, 'error');
-          return false;
+            this.showValidationMessage('CSV validation successful! Weights will determine slice sizes.', 'success');
+            return true;
+        } catch (error) {
+            this.showValidationMessage('CSV parsing error: ' + error.message, 'error');
+            return false;
         }
-      }
+    }
+
 
       showValidationMessage(message, type) {
         this.validationMessage.innerHTML = message;
@@ -510,30 +509,29 @@ Share an embarrassing story,20,#FFEAA7,high`;
       }
 
       updateWheelData() {
-        if (!this.validateCSV()) return;
+  if (!this.validateCSV()) return;
 
-        const csvText = this.csvInput.value.trim();
-        const parsed = Papa.parse(csvText, { skipEmptyLines: true });
-        const data = parsed.data;
+  const csvText = this.csvInput.value.trim();
+  const parsed = Papa.parse(csvText, { skipEmptyLines: true });
+  const data = parsed.data;
 
-        const maxSlices = parseInt(this.maxSlicesInput.value) || data.length;
-        const shuffledData = [...data].sort(() => 0.5 - Math.random());
-        const limitedData = shuffledData.slice(0, maxSlices);
+  const maxSlices = parseInt(this.maxSlicesInput.value) || data.length;
+  const shuffledData = [...data].sort(() => 0.5 - Math.random());
+  const limitedData = shuffledData.slice(0, maxSlices);
 
-        let totalPercentage = limitedData.reduce((sum, row) => sum + parseFloat(row[1]), 0);
+  const totalWeight = limitedData.reduce((sum, row) => sum + parseInt(row[1]), 0);
 
-        this.wheelData = limitedData.map(row => ({
-          text: row[0].trim(),
-          percentage: (parseFloat(row[1]) / totalPercentage) * 100,
-          color: row[2].trim(),
-          severity: row[3].trim()
-        }));
+  this.wheelData = limitedData.map(row => ({
+    text: row[0].trim(),
+    percentage: (parseInt(row[1]) / totalWeight) * 100,
+    color: row[2].trim(),
+    severity: row[3].trim()
+  }));
 
-        this.renderWheel();
-        this.updateSeverityStyles();
-        this.vetoBtn.style.display = 'none';
-        this.resultDisplay.innerHTML = '<p>Wheel updated! Click "SPIN THE WHEEL!" to play.</p>';
-      }
+  this.renderWheel();
+  this.resultDisplay.innerHTML = '<p>Wheel updated! Click "SPIN THE WHEEL!" to play.</p>';
+}
+
             
             renderWheel() {
                 // Clear existing content
