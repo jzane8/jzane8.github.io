@@ -286,6 +286,23 @@
             .controls {
                 width: 100%;
                 max-width: 400px;
+                margin-top: 20px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .game-area {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+            .wheel-wrapper {
+                width: 500px;
+                height: 500px;
+            }
+            .controls {
+                max-width: 400px;
+                width: 100%;
+                margin-top: 0;
             }
         }
     </style>
@@ -305,20 +322,19 @@
                         <!-- Wheel sections will be generated here -->
                     </svg>
                 </div>
+            </div>
+            <div class="controls">
+                <button class="spin-button" id="spinBtn">SPIN THE WHEEL!</button>
+                <button class="veto-button" id="vetoBtn">🚫 VETO & RESPIN</button>
                 
-                <div class="controls">
-                    <button class="spin-button" id="spinBtn">SPIN THE WHEEL!</button>
-                    <button class="veto-button" id="vetoBtn">🚫 VETO & RESPIN</button>
-                    
-                    <div class="coin-flip-container">
-                        <h3>Undecided?</h3>
-                        <button class="coin-flip-button" id="coinFlipBtn">Flip Coin</button>
-                        <div class="coin" id="coin">👤</div>
-                    </div>
-                    
-                    <div class="result-display" id="resultDisplay">
-                        <p>Click "SPIN THE WHEEL!" to get started!</p>
-                    </div>
+                <div class="coin-flip-container">
+                    <h3>Undecided?</h3>
+                    <button class="coin-flip-button" id="coinFlipBtn">Flip Coin</button>
+                    <div class="coin" id="coin">👤</div>
+                </div>
+                
+                <div class="result-display" id="resultDisplay">
+                    <p>Click "SPIN THE WHEEL!" to get started!</p>
                 </div>
             </div>
         </div>
@@ -332,11 +348,11 @@
                 
                 <h3>CSV Data (prompt_text, percentage_size, color, severity)</h3>
                 <textarea class="csv-input" id="csvInput" placeholder="Example:
-Dance for 30 seconds,20,#FF6B6B,medium
-Tell a joke,15,#4ECDC4,low
-Sing your favorite song,25,#45B7D1,high
-Do 10 pushups,20,#96CEB4,medium
-Share an embarrassing story,20,#FFEAA7,high"></textarea>
+Dance for 30 seconds,2,#FF6B6B,medium
+Tell a joke,5,#4ECDC4,low
+Sing your favorite song,5,#45B7D1,high
+Do 10 pushups,2,#96CEB4,medium
+Share an embarrassing story,2,#FFEAA7,high"></textarea>
 
             <!-- ✅ Max Slices Input -->
             <h3>Max Slices on Wheel</h3>
