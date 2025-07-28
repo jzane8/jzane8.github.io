@@ -293,7 +293,7 @@
 <body>
     <div class="container">
         <div class="game-header">
-            <h1>🎡 Wheel of Fortune 🎡</h1>
+            <h1>🎡 Wheel of F****** 🎡</h1>
             <p>Spin the wheel and see what fate has in store!</p>
         </div>
 
@@ -337,6 +337,12 @@ Tell a joke,15,#4ECDC4,low
 Sing your favorite song,25,#45B7D1,high
 Do 10 pushups,20,#96CEB4,medium
 Share an embarrassing story,20,#FFEAA7,high"></textarea>
+
+            <!-- ✅ Max Slices Input -->
+            <h3>Max Slices on Wheel</h3>
+            <input type="number" id="maxSlicesInput" value="8" min="1" max="50"
+                style="width: 100%; margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+
 
                 <h3>Severity Styling Configuration</h3>
                 <div class="severity-config">
@@ -398,159 +404,136 @@ Share an embarrassing story,20,#FFEAA7,high"></textarea>
     </div>
 
     <script>
-        class WheelOfFortune {
-            constructor() {
-                this.wheelSvg = document.getElementById('wheelSvg');
-                this.spinBtn = document.getElementById('spinBtn');
-                this.vetoBtn = document.getElementById('vetoBtn');
-                this.coinFlipBtn = document.getElementById('coinFlipBtn');
-                this.coin = document.getElementById('coin');
-                this.resultDisplay = document.getElementById('resultDisplay');
-                this.adminToggle = document.getElementById('adminToggle');
-                this.adminContent = document.getElementById('adminContent');
-                this.csvInput = document.getElementById('csvInput');
-                this.updateBtn = document.getElementById('updateWheel');
-                this.validationMessage = document.getElementById('validationMessage');
-                
-                this.currentRotation = 0;
-                this.isSpinning = false;
-                this.wheelData = [];
-                this.lastSelectedIndex = -1;
-                
-                this.initializeEventListeners();
-                this.loadDefaultData();
-                this.setupSeverityListeners();
-            }
-            
-            initializeEventListeners() {
-                this.spinBtn.addEventListener('click', () => this.spinWheel());
-                this.vetoBtn.addEventListener('click', () => this.vetoSelection());
-                this.coinFlipBtn.addEventListener('click', () => this.flipCoin());
-                this.adminToggle.addEventListener('click', () => this.toggleAdmin());
-                this.updateBtn.addEventListener('click', () => this.updateWheelData());
-                this.csvInput.addEventListener('input', () => this.validateCSV());
-            }
-            
-            setupSeverityListeners() {
-                const severityInputs = ['lowFontSize', 'lowFontWeight', 'lowTextTransform',
-                                     'mediumFontSize', 'mediumFontWeight', 'mediumTextTransform',
-                                     'highFontSize', 'highFontWeight', 'highTextTransform'];
-                
-                severityInputs.forEach(id => {
-                    const element = document.getElementById(id);
-                    if (element) {
-                        element.addEventListener('change', () => this.updateSeverityStyles());
-                    }
-                });
-            }
-            
-            loadDefaultData() {
-                const defaultCSV = `Dance for 30 seconds,20,#FF6B6B,medium
+           class WheelOfFortune {
+      constructor() {
+        this.wheelSvg = document.getElementById('wheelSvg');
+        this.spinBtn = document.getElementById('spinBtn');
+        this.vetoBtn = document.getElementById('vetoBtn');
+        this.coinFlipBtn = document.getElementById('coinFlipBtn');
+        this.coin = document.getElementById('coin');
+        this.resultDisplay = document.getElementById('resultDisplay');
+        this.adminToggle = document.getElementById('adminToggle');
+        this.adminContent = document.getElementById('adminContent');
+        this.csvInput = document.getElementById('csvInput');
+        this.updateBtn = document.getElementById('updateWheel');
+        this.validationMessage = document.getElementById('validationMessage');
+        this.maxSlicesInput = document.getElementById('maxSlicesInput'); // ✅ NEW
+
+        this.currentRotation = 0;
+        this.isSpinning = false;
+        this.wheelData = [];
+        this.lastSelectedIndex = -1;
+
+        this.initializeEventListeners();
+        this.loadDefaultData();
+        this.setupSeverityListeners();
+      }
+
+      initializeEventListeners() {
+        this.spinBtn.addEventListener('click', () => this.spinWheel());
+        this.vetoBtn.addEventListener('click', () => this.vetoSelection());
+        this.coinFlipBtn.addEventListener('click', () => this.flipCoin());
+        this.adminToggle.addEventListener('click', () => this.toggleAdmin());
+        this.updateBtn.addEventListener('click', () => this.updateWheelData());
+        this.csvInput.addEventListener('input', () => this.validateCSV());
+        this.maxSlicesInput.addEventListener('change', () => this.updateWheelData()); // ✅ NEW
+      }
+
+      loadDefaultData() {
+        const defaultCSV = `Dance for 30 seconds,20,#FF6B6B,medium
 Tell a joke,15,#4ECDC4,low
 Sing your favorite song,25,#45B7D1,high
 Do 10 pushups,20,#96CEB4,medium
 Share an embarrassing story,20,#FFEAA7,high`;
 
-                this.csvInput.value = defaultCSV;
-                this.updateWheelData();
+        this.csvInput.value = defaultCSV;
+        this.updateWheelData();
+      }
+
+      validateCSV() {
+        const csvText = this.csvInput.value.trim();
+        if (!csvText) {
+          this.showValidationMessage('CSV cannot be empty', 'error');
+          return false;
+        }
+
+        try {
+          const parsed = Papa.parse(csvText, { skipEmptyLines: true });
+          const data = parsed.data;
+
+          if (data.length === 0) {
+            this.showValidationMessage('No valid data found', 'error');
+            return false;
+          }
+
+          const errors = [];
+          let totalPercentage = 0;
+
+          data.forEach((row, index) => {
+            if (row.length !== 4) {
+              errors.push(`Row ${index + 1}: Must have exactly 4 columns`);
+              return;
             }
-            
-            validateCSV() {
-                const csvText = this.csvInput.value.trim();
-                if (!csvText) {
-                    this.showValidationMessage('CSV cannot be empty', 'error');
-                    return false;
-                }
-                
-                try {
-                    const parsed = Papa.parse(csvText, { skipEmptyLines: true });
-                    const data = parsed.data;
-                    
-                    if (data.length === 0) {
-                        this.showValidationMessage('No valid data found', 'error');
-                        return false;
-                    }
-                    
-                    let totalPercentage = 0;
-                    const errors = [];
-                    
-                    data.forEach((row, index) => {
-                        if (row.length !== 4) {
-                            errors.push(`Row ${index + 1}: Must have exactly 4 columns`);
-                            return;
-                        }
-                        
-                        const [text, percentage, color, severity] = row;
-                        
-                        if (!text || text.trim() === '') {
-                            errors.push(`Row ${index + 1}: Prompt text cannot be empty`);
-                        }
-                        
-                        const percentNum = parseFloat(percentage);
-                        if (isNaN(percentNum) || percentNum <= 0) {
-                            errors.push(`Row ${index + 1}: Invalid percentage value`);
-                        } else {
-                            totalPercentage += percentNum;
-                        }
-                        
-                        if (!color || !color.match(/^#[0-9A-Fa-f]{6}$/)) {
-                            errors.push(`Row ${index + 1}: Invalid hex color format`);
-                        }
-                        
-                        if (!['low', 'medium', 'high'].includes(severity)) {
-                            errors.push(`Row ${index + 1}: Severity must be low, medium, or high`);
-                        }
-                    });
-                    
-                    if (errors.length > 0) {
-                        this.showValidationMessage(errors.join('<br>'), 'error');
-                        return false;
-                    }
-                    
-                    if (Math.abs(totalPercentage - 100) > 0.01) {
-                        this.showValidationMessage(
-                            `Total percentage is ${totalPercentage.toFixed(1)}%. Will be normalized to 100%.`, 
-                            'warning'
-                        );
-                    } else {
-                        this.showValidationMessage('CSV validation successful!', 'success');
-                    }
-                    
-                    return true;
-                } catch (error) {
-                    this.showValidationMessage('CSV parsing error: ' + error.message, 'error');
-                    return false;
-                }
-            }
-            
-            showValidationMessage(message, type) {
-                this.validationMessage.innerHTML = message;
-                this.validationMessage.className = type === 'error' ? 'validation-error' : 
-                                                 type === 'success' ? 'validation-success' : '';
-            }
-            
-            updateWheelData() {
-                if (!this.validateCSV()) return;
-                
-                const csvText = this.csvInput.value.trim();
-                const parsed = Papa.parse(csvText, { skipEmptyLines: true });
-                const data = parsed.data;
-                
-                // Normalize percentages to total 100%
-                let totalPercentage = data.reduce((sum, row) => sum + parseFloat(row[1]), 0);
-                
-                this.wheelData = data.map(row => ({
-                    text: row[0].trim(),
-                    percentage: (parseFloat(row[1]) / totalPercentage) * 100,
-                    color: row[2].trim(),
-                    severity: row[3].trim()
-                }));
-                
-                this.renderWheel();
-                this.updateSeverityStyles();
-                this.vetoBtn.style.display = 'none';
-                this.resultDisplay.innerHTML = '<p>Wheel updated! Click "SPIN THE WHEEL!" to play.</p>';
-            }
+
+            const [text, percentage, color, severity] = row;
+            const percentNum = parseFloat(percentage);
+
+            if (!text.trim()) errors.push(`Row ${index + 1}: Text cannot be empty`);
+            if (isNaN(percentNum) || percentNum <= 0) errors.push(`Row ${index + 1}: Invalid percentage`);
+            else totalPercentage += percentNum;
+
+            if (!/^#[0-9A-Fa-f]{6}$/.test(color.trim()))
+              errors.push(`Row ${index + 1}: Invalid color format`);
+
+            if (!['low', 'medium', 'high'].includes(severity.trim()))
+              errors.push(`Row ${index + 1}: Invalid severity value`);
+          });
+
+          if (errors.length > 0) {
+            this.showValidationMessage(errors.join('<br>'), 'error');
+            return false;
+          }
+
+          this.showValidationMessage('CSV validation successful!', 'success');
+          return true;
+        } catch (e) {
+          this.showValidationMessage(`CSV parsing error: ${e.message}`, 'error');
+          return false;
+        }
+      }
+
+      showValidationMessage(message, type) {
+        this.validationMessage.innerHTML = message;
+        this.validationMessage.className =
+          type === 'error' ? 'validation-error' :
+          type === 'success' ? 'validation-success' : '';
+      }
+
+      updateWheelData() {
+        if (!this.validateCSV()) return;
+
+        const csvText = this.csvInput.value.trim();
+        const parsed = Papa.parse(csvText, { skipEmptyLines: true });
+        const data = parsed.data;
+
+        const maxSlices = parseInt(this.maxSlicesInput.value) || data.length;
+        const shuffledData = [...data].sort(() => 0.5 - Math.random());
+        const limitedData = shuffledData.slice(0, maxSlices);
+
+        let totalPercentage = limitedData.reduce((sum, row) => sum + parseFloat(row[1]), 0);
+
+        this.wheelData = limitedData.map(row => ({
+          text: row[0].trim(),
+          percentage: (parseFloat(row[1]) / totalPercentage) * 100,
+          color: row[2].trim(),
+          severity: row[3].trim()
+        }));
+
+        this.renderWheel();
+        this.updateSeverityStyles();
+        this.vetoBtn.style.display = 'none';
+        this.resultDisplay.innerHTML = '<p>Wheel updated! Click "SPIN THE WHEEL!" to play.</p>';
+      }
             
             renderWheel() {
                 // Clear existing content
