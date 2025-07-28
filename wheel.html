@@ -127,23 +127,6 @@
             transform: none;
         }
 
-        .veto-button {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.2em;
-            background: #FF4444;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-bottom: 20px;
-            font-weight: bold;
-            display: none;
-        }
-
-        .veto-button:hover {
-            background: #CC3333;
-        }
 
         .coin-flip-container {
             text-align: center;
@@ -325,7 +308,6 @@
             </div>
             <div class="controls">
                 <button class="spin-button" id="spinBtn">SPIN THE WHEEL!</button>
-                <button class="veto-button" id="vetoBtn">🚫 VETO & RESPIN</button>
                 
                 <div class="coin-flip-container">
                     <h3>Undecided?</h3>
@@ -425,7 +407,6 @@ Share an embarrassing story,2,#FFEAA7,high"></textarea>
       constructor() {
         this.wheelSvg = document.getElementById('wheelSvg');
         this.spinBtn = document.getElementById('spinBtn');
-        this.vetoBtn = document.getElementById('vetoBtn');
         this.coinFlipBtn = document.getElementById('coinFlipBtn');
         this.coin = document.getElementById('coin');
         this.resultDisplay = document.getElementById('resultDisplay');
@@ -434,12 +415,11 @@ Share an embarrassing story,2,#FFEAA7,high"></textarea>
         this.csvInput = document.getElementById('csvInput');
         this.updateBtn = document.getElementById('updateWheel');
         this.validationMessage = document.getElementById('validationMessage');
-        this.maxSlicesInput = document.getElementById('maxSlicesInput'); // ✅ NEW
+        this.maxSlicesInput = document.getElementById('maxSlicesInput');
 
         this.currentRotation = 0;
         this.isSpinning = false;
         this.wheelData = [];
-        this.lastSelectedIndex = -1;
 
         this.initializeEventListeners();
         this.loadDefaultData();
@@ -448,12 +428,11 @@ Share an embarrassing story,2,#FFEAA7,high"></textarea>
 
       initializeEventListeners() {
         this.spinBtn.addEventListener('click', () => this.spinWheel());
-        this.vetoBtn.addEventListener('click', () => this.vetoSelection());
         this.coinFlipBtn.addEventListener('click', () => this.flipCoin());
         this.adminToggle.addEventListener('click', () => this.toggleAdmin());
         this.updateBtn.addEventListener('click', () => this.updateWheelData());
         this.csvInput.addEventListener('input', () => this.validateCSV());
-        this.maxSlicesInput.addEventListener('change', () => this.updateWheelData()); // ✅ NEW
+        this.maxSlicesInput.addEventListener('change', () => this.updateWheelData());
         document.getElementById('fixCsvBtn').addEventListener('click', () => this.autoFixCSV());
       }
 
@@ -535,7 +514,7 @@ Share an embarrassing story,2,#FFEAA7,high`;
         }
       }
 
-      updateWheelData() {
+updateWheelData() {
   if (!this.validateCSV()) return;
 
   const csvText = this.csvInput.value.trim();
@@ -543,8 +522,10 @@ Share an embarrassing story,2,#FFEAA7,high`;
   const data = parsed.data;
 
   const maxSlices = parseInt(this.maxSlicesInput.value) || data.length;
-  const shuffledData = [...data].sort(() => 0.5 - Math.random());
-  const limitedData = shuffledData.slice(0, maxSlices);
+  // Remove shuffling to keep consistent order
+  // const shuffledData = [...data].sort(() => 0.5 - Math.random());
+  // const limitedData = shuffledData.slice(0, maxSlices);
+  const limitedData = data.slice(0, maxSlices);
 
   const totalWeight = limitedData.reduce((sum, row) => sum + parseInt(row[1]), 0);
 
@@ -714,15 +695,19 @@ Share an embarrassing story,2,#FFEAA7,high`;
                 
                 this.isSpinning = true;
                 this.spinBtn.disabled = true;
-                this.vetoBtn.style.display = 'none';
                 this.resultDisplay.innerHTML = '<p>Spinning...</p>';
+                
+                // Reset rotation to zero before spinning to avoid cumulative errors
+                this.currentRotation = 0;
+                this.wheelSvg.style.transition = 'none';
+                this.wheelSvg.style.transform = `rotate(0deg)`;
                 
                 // Generate random spin (4-8 full rotations plus random angle)
                 const spins = 4 + Math.random() * 4;
                 const randomAngle = Math.random() * 360;
                 const totalRotation = spins * 360 + randomAngle;
                 
-                this.currentRotation += totalRotation;
+                this.currentRotation = totalRotation;
                 
                 // Apply rotation with proper CSS transform
                 this.wheelSvg.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
@@ -731,66 +716,10 @@ Share an embarrassing story,2,#FFEAA7,high`;
                 setTimeout(() => {
                     this.isSpinning = false;
                     this.spinBtn.disabled = false;
-                    
-                    // Calculate which section was selected
-                    const normalizedAngle = (360 - (this.currentRotation % 360)) % 360;
-                    this.lastSelectedIndex = this.getSelectedSection(normalizedAngle);
-                    
-                    if (this.lastSelectedIndex !== -1) {
-                        const selectedSection = this.wheelData[this.lastSelectedIndex];
-                        this.resultDisplay.innerHTML = `
-                            <div>
-                                <h3>You got:</h3>
-                                <p class="severity-${selectedSection.severity}" style="font-size: 1.2em; margin-top: 10px;">
-                                    ${selectedSection.text}
-                                </p>
-                            </div>
-                        `;
-                        this.vetoBtn.style.display = 'block';
-                    }
+                    this.resultDisplay.innerHTML = '<p>Spin complete! The wheel has spoken.</p>';
                 }, 4000);
             }
             
-            getSelectedSection(angle) {
-                // Adjust for starting position (-90 degrees)
-                const adjustedAngle = (angle + 90) % 360;
-                let currentAngle = 0;
-                
-                for (let i = 0; i < this.wheelData.length; i++) {
-                    const sectionAngle = (this.wheelData[i].percentage / 100) * 360;
-                    if (adjustedAngle >= currentAngle && adjustedAngle < currentAngle + sectionAngle) {
-                        return i;
-                    }
-                    currentAngle += sectionAngle;
-                }
-                
-                return 0; // Fallback to first section
-            }
-            
-            vetoSelection() {
-                if (this.lastSelectedIndex === -1) return;
-                
-                // Remove the vetoed section
-                this.wheelData.splice(this.lastSelectedIndex, 1);
-                
-                // Renormalize percentages
-                const totalPercentage = this.wheelData.reduce((sum, section) => sum + section.percentage, 0);
-                if (totalPercentage > 0) {
-                    this.wheelData.forEach(section => {
-                        section.percentage = (section.percentage / totalPercentage) * 100;
-                    });
-                }
-                
-                this.renderWheel();
-                this.vetoBtn.style.display = 'none';
-                this.resultDisplay.innerHTML = '<p>Section vetoed! Spin again to get a new result.</p>';
-                this.lastSelectedIndex = -1;
-                
-                if (this.wheelData.length === 0) {
-                    this.resultDisplay.innerHTML = '<p>No more sections left! Please reload the wheel in the admin panel.</p>';
-                    this.spinBtn.disabled = true;
-                }
-            }
             
             flipCoin() {
                 const coin = this.coin;
