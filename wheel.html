@@ -92,6 +92,19 @@
             paint-order: stroke fill;
             stroke: rgba(0,0,0,0.8);
             stroke-width: 1px;
+            pointer-events: auto;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .section-text.wheel-stopped:hover {
+            fill: #FFD700;
+            stroke: rgba(0,0,0,1);
+            stroke-width: 2px;
+            font-size: 120% !important;
+        }
+
+        .section-text.wheel-spinning {
             pointer-events: none;
         }
 
@@ -618,6 +631,9 @@ updateWheelData() {
                     }
 
                     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    // Set initial class based on spinning state
+                    const textClass = this.isSpinning ? 'section-text wheel-spinning' : 'section-text wheel-stopped';
+                    text.setAttribute('class', textClass);
                     text.setAttribute('x', textX);
                     text.setAttribute('y', textY);
                     text.setAttribute('text-anchor', 'middle');
@@ -697,6 +713,9 @@ updateWheelData() {
                 this.spinBtn.disabled = true;
                 this.resultDisplay.innerHTML = '<p>Spinning...</p>';
                 
+                // Update text classes to disable hover during spinning
+                this.updateTextClasses();
+                
                 // Reset rotation to zero before spinning to avoid cumulative errors
                 this.currentRotation = 0;
                 this.wheelSvg.style.transition = 'none';
@@ -717,7 +736,21 @@ updateWheelData() {
                     this.isSpinning = false;
                     this.spinBtn.disabled = false;
                     this.resultDisplay.innerHTML = '<p>Spin complete! The wheel has spoken.</p>';
+                    
+                    // Update text classes to enable hover after spinning
+                    this.updateTextClasses();
                 }, 4000);
+            }
+
+            updateTextClasses() {
+                const textElements = this.wheelSvg.querySelectorAll('.section-text');
+                textElements.forEach(text => {
+                    if (this.isSpinning) {
+                        text.setAttribute('class', 'section-text wheel-spinning');
+                    } else {
+                        text.setAttribute('class', 'section-text wheel-stopped');
+                    }
+                });
             }
             
             
