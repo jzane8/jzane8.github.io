@@ -2,7 +2,7 @@
   <head>
       <title>Jake Zane</title>
       <link rel="stylesheet" href="css/jakestyle.css">
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
       <script src="js/jakescript.js"></script>
 
   </head>
@@ -25,9 +25,6 @@
           </div>
           <div class = "sidebar-tab" id = "music">
             <a href = "/music.html"> Music </a>
-          </div>
-          <div class = "sidebar-tab" id = "esports">
-            <a href = "/esports.html"> Esports </a>
           </div>
           <div class = "sidebar-tab" id = "contact">
             <a href = "/contact.html"> Contact </a>
@@ -53,7 +50,12 @@
               Eli Winter on guitar. We recieved third place for submitting the following song, "Sunbeam":
             </p>
             <img src="images/smileyoureoncamera.jpg" id = "onrecord1">
-            <iframe src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F561582230866733%2Fvideos%2F610479725976983%2F&show_text=0&width=560" id = "sunbeamvid" width="560" height="315" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true" allowFullScreen="true"></iframe>
+            <div class="facebook-embed-container">
+              <iframe src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F561582230866733%2Fvideos%2F610479725976983%2F&show_text=0&width=560" id="sunbeamvid" width="560" height="315" class="facebook-video" scrolling="no" frameborder="0" allowTransparency="true" allowFullScreen="true" allow="encrypted-media"></iframe>
+              <div class="fallback-message">
+                <p>If the video doesn't load, you can <a href="https://www.facebook.com/561582230866733/videos/610479725976983/" target="_blank" rel="noopener noreferrer">view it directly on Facebook</a>.</p>
+              </div>
+            </div>
         </div>
       </div>
     </div>

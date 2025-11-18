@@ -1,0 +1,272 @@
+<HTML>
+  <head>
+      <title>Jake Zane - TransparenC</title>
+      <link rel="stylesheet" href="css/jakestyle.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+      <script src="js/jakescript.js"></script>
+  </head>
+  <body>
+    <div class = "wrap">
+      <div class = "intro" id = "intro">
+        <h2>
+          <a href = "index.html">
+          <b> Jacob "Jake" Zane </b>
+          </a>
+        </h2>
+        <div id = "hidearrow" onclick="hideIntro()">&#8613;</div>
+
+        <div class = "sidebar">
+          <div class = "sidebar-tab" id = "about">
+            <a href = "index.html"> About </a>
+          </div>
+          <div class = "sidebar-tab" id = "projects">
+            <a href = "projects.html"> Projects </a>
+          </div>
+          <div class = "sidebar-tab" id = "music">
+            <a href = "music.html"> Music </a>
+          </div>
+          <div class = "sidebar-tab" id = "contact">
+            <a href = "contact.html"> Contact </a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class = "body">
+        <h3>This is strictly for demo purposes only.</h3>
+          <div class="transparenc-logo">
+            <div class="transparenc-logo-container">
+              <span class="transparenc-logo-text">
+                Transparen
+              </span>
+              <img src="images/cubs-c-logo.png" 
+                   alt="Chicago Cubs C" 
+                   class="transparenc-logo-image"
+                   onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+              <span class="transparenc-logo-fallback">C</span>
+            </div>
+            <div class="transparenc-subtitle">
+              Student Housing
+            </div>
+          </div>
+          
+          <h4> Introduction </h4>
+          <p>
+            TransparenC offers transparent, hassle-free student housing in Chicago's vibrant South Side. 
+            We believe housing should be simple, affordable, and honest - with no hidden fees, 
+            no complex paperwork, and complete flexibility in what you pay for.
+          </p>
+
+          <h4> Transparent Lease Terms </h4>
+          <p>
+            Every cost is clearly outlined upfront. Our lease terms are written in plain English, 
+            not legal jargon. Profit margins are clearly highlighted on your user profile. 
+            You'll know exactly where every dollar goes:
+          </p>
+          <ul>
+            <li>Monthly rent with no hidden fees</li>
+            <li>Clear utility costs and what's included</li>
+            <li>Transparent security deposit terms</li>
+            <li>Profit margins displayed for all services</li>
+            <li>No surprise charges or fine print</li>
+            <li>Change your fee allocations anytime</li>
+          </ul>
+
+          <h4> Easy Process </h4>
+          <p>
+            Getting into TransparenC housing is refreshingly simple:
+          </p>
+          <ol>
+            <li>Verify your student status</li>
+            <li>Choose your housing preferences</li>
+            <li>Let our agents handle the paperwork</li>
+            <li>Move in when ready</li>
+          </ol>
+
+          <h4> Flexible Payments </h4>
+          <p>
+            Customize your housing costs based on what you actually need. ALL additional fees are completely optional:
+          </p>
+          <ul>
+            <li>Basic room rental</li>
+            <li>All additional fees are completely optional</li>
+            <li>Profit margins clearly displayed on your user profile</li>
+            <li>Full transparency on where every dollar goes</li>
+            <li>Change your fee allocations anytime</li>
+            <li>Payment plans available</li>
+          </ul>
+
+          <h4> Agent Support </h4>
+          <p>
+            Our experienced agents handle the heavy lifting so you can focus on your studies. 
+            They'll take care of:
+          </p>
+          <ul>
+            <li>Lease documentation and filing</li>
+            <li>Utility setup and transfers</li>
+            <li>Move-in coordination</li>
+            <li>Maintenance requests</li>
+            <li>Any questions or concerns</li>
+          </ul>
+
+          <h4> Student Housing </h4>
+          <p>
+            Located in Chicago's South Side with convenient access to:
+          </p>
+          <ul>
+            <li>University of Chicago</li>
+            <li>Illinois Institute of Technology</li>
+            <li>DePaul University</li>
+            <li>Public transportation</li>
+            <li>Local amenities and services</li>
+          </ul>
+
+          <h4> Sample Lease </h4>
+          <p>
+            See exactly what transparency looks like. Check the boxes for services you want:
+          </p>
+          <div class="sample-lease">
+            <div class="lease-item">
+              <input type="checkbox" id="base-rent" disabled checked>
+              <label for="base-rent"><strong>Base rent: $850/month</strong> (Required)</label>
+              <div class="profit-margin">Profit margin: 15% | Goes to: Property maintenance, staff wages, facility improvements</div>
+            </div>
+            
+            <div class="lease-item">
+              <input type="checkbox" id="utilities">
+              <label for="utilities"><strong>Utilities: $75/month</strong> (Optional)</label>
+              <div class="profit-margin">Profit margin: 8% | Goes to: Electric, gas, water, internet service</div>
+            </div>
+            
+            <div class="lease-item">
+              <input type="checkbox" id="maintenance">
+              <label for="maintenance"><strong>Maintenance fee: $45/month</strong> (Optional)</label>
+              <div class="profit-margin">Profit margin: 12% | Goes to: Cleaning supplies, repairs, maintenance staff</div>
+            </div>
+            
+            <div class="lease-item">
+              <input type="checkbox" id="community">
+              <label for="community"><strong>Community development fund: $30/month</strong> (Optional)</label>
+              <div class="profit-margin">Profit margin: 5% | Goes to: Neighborhood improvements, student programs</div>
+            </div>
+            
+            <div class="lease-item">
+              <input type="checkbox" id="anti-mac">
+              <label for="anti-mac"><strong>Anti-MAC community contribution: $69-420/month</strong> (Optional) 
+                <button type="button" class="info-button" onclick="openMacModal()">Why?</button>
+              </label>
+              <div class="profit-margin">Profit margin: 0% | Goes towards funding developments to knock MAC out of their ludicrous real estate monopoly in our otherwise incredible neighborhood.</div>
+            </div>
+          </div>
+
+          <h4> Contact </h4>
+          <p>
+            Ready to experience transparent student housing? Get in touch with our team:
+          </p>
+          <p>
+            <strong>Email:</strong> transparenc@dgqt.community<br>
+            <strong>Phone:</strong> (312) 555-0123<br>
+            <strong>Address:</strong> 123 Kimbarp Ave, Chicago, IL 60637
+          </p>
+          <p>
+            Schedule a tour or ask questions - we're here to make your housing experience as 
+            straightforward as possible.
+          </p>
+      </div>
+    </div>
+
+    <!-- MAC Properties Modal -->
+    <div id="macModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeMacModal()">&times;</span>
+        <div class="mac-container">
+          <h1>MAC Properties: Documented Issues and Complaints</h1>
+          
+          <h2>Legal Issues and Discrimination</h2>
+          <ul>
+            <li>
+              <strong>Class-Action Lawsuit (December 2024):</strong> Four housing choice voucher holders filed a class-action lawsuit against Mac Properties following years of complaints
+              <div class="source-link">Source: <a href="https://chicago.suntimes.com/real-estate/2024/12/17/mac-properties-hyde-park-housing-voucher-apartments-class-action-lawsuit" target="_blank">Chicago Sun-Times</a></div>
+            </li>
+          </ul>
+
+          <h2>Management Practices</h2>
+          <ul>
+            <li>
+              <strong>COVID-19 NDAs:</strong> Required tenants to sign nondisclosure agreements before discussing rent payment arrangements during the pandemic
+              <div class="source-link">Source: <a href="https://chicagomaroon.com/27778/news/mac-residents-must-sign-ndas-discussing-rent-chang/" target="_blank">Chicago Maroon</a></div>
+            </li>
+            <li>
+              <strong>Tenant Relations:</strong> Residents describe management as <span class="highlight">"ignorant, confrontational, greedy, uncaring, unreliable"</span> and feeling treated <span class="highlight">"like they are crap"</span>
+              <div class="source-link">Source: Multiple apartment review websites</div>
+            </li>
+            <li>
+              <strong>Billing Disputes:</strong> Multiple disputes over electric charges and account discrepancies resulting in denied refunds
+              <div class="source-link">Source: Better Business Bureau records</div>
+            </li>
+          </ul>
+
+          <h2>Property Conditions</h2>
+          <ul>
+            <li>
+              <strong>Facility Quality:</strong> Complaints about small gym facilities and deteriorating common areas
+              <div class="source-link">Source: Various tenant review platforms</div>
+            </li>
+            <li>
+              <strong>Maintenance Issues:</strong> Inconsistent response times for repair requests
+              <div class="source-link">Source: Various tenant review platforms</div>
+            </li>
+          </ul>
+
+          <h2>Additional Sources</h2>
+          <ul>
+            <li>
+              <a href="https://www.hpherald.com/evening_digest/housing-voucher-holders-launch-lawsuit-against-mac-properties-alleging-discrimination/article_4f1aa0ac-bd90-11ef-bdc1-c7010845654d.html" target="_blank">Hyde Park Herald</a> - Additional coverage of discrimination lawsuit
+            </li>
+            <li>
+              <a href="https://blockclubchicago.org/2020/04/10/hyde-park-landlord-forces-tenants-who-need-rent-relief-to-sign-nondisclosure-agreements/" target="_blank">Block Club Chicago</a> - NDA reporting
+            </li>
+            <li>
+              <a href="https://therealdeal.com/chicago/2024/12/17/mac-properties-accused-of-racial-income-based-discrimination/" target="_blank">The Real Deal</a> - Lawsuit coverage
+            </li>
+          </ul>
+
+          <div class="disclaimer">
+            <strong>Disclaimer:</strong> This information is compiled from publicly available sources including news reports, court filings, and tenant review platforms. MAC Properties has disputed various allegations. This document is for informational purposes only and should not be construed as legal advice.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      async function loadCubsLogo(img) {
+        try {
+          // Read the uploaded Cubs logo file
+          const fileData = await window.fs.readFile('paste.txt', { encoding: 'utf8' });
+          // For now, we'll use a Cubs blue C as fallback since we can't directly embed the uploaded image
+          img.style.display = 'none';
+          img.nextElementSibling.style.display = 'inline';
+        } catch (error) {
+          img.style.display = 'none';
+          img.nextElementSibling.style.display = 'inline';
+        }
+      }
+
+      function openMacModal() {
+        document.getElementById('macModal').style.display = 'block';
+      }
+
+      function closeMacModal() {
+        document.getElementById('macModal').style.display = 'none';
+      }
+
+      // Close modal when clicking outside of it
+      window.onclick = function(event) {
+        var modal = document.getElementById('macModal');
+        if (event.target == modal) {
+          modal.style.display = 'none';
+        }
+      }
+    </script>
+  </body>
+</HTML>
