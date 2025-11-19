@@ -5,7 +5,7 @@ const { useState } = React;
 
 // Individual Counter Component
 // Props: title (string) - The title to display for this counter
-function CounterApp({ title = "Interactive Counter Component" }) {
+function CounterApp({ title = "Interactive Political Simulator" }) {
     const [count, setCount] = useState(0);
     const [message, setMessage] = useState(title);
 
@@ -46,8 +46,9 @@ function CounterApp({ title = "Interactive Counter Component" }) {
 
 // Counter List Component
 // Props: counterTitles (array) - Array of strings to create multiple counters
-function CounterAppList({ counterTitles = [] }) {
+function CounterAppList({ inputCounterTitles = [] }) {
     // If no titles provided, show a single default counter
+    const [counterTitles, setTitles] = useState(inputCounterTitles) 
     if (counterTitles.length === 0) {
         return (
             <>
@@ -72,16 +73,7 @@ function CounterAppList({ counterTitles = [] }) {
             {counterTitles.map((title, index) => (
                 <CounterApp key={index} title={title} />
             ))}
-            <div className="info-box" style={{ marginTop: '30px' }}>
-                <h4>React Features Demonstrated:</h4>
-                <ul>
-                    <li><strong>State Management:</strong> Using the useState hook to manage component state</li>
-                    <li><strong>Event Handling:</strong> onClick handlers for button interactions</li>
-                    <li><strong>Dynamic Rendering:</strong> UI updates automatically when state changes</li>
-                    <li><strong>Component Structure:</strong> Self-contained, reusable component architecture</li>
-                    <li><strong>List Rendering:</strong> Using map() to render multiple components from an array</li>
-                </ul>
-            </div>
+            
         </>
     );
 }

@@ -3,9 +3,9 @@
 
 // Define counter titles array
 const counterTitles = [
-    "Socialist Fervor",
-    "Liberal Fervor",
-    "Nationalist Fervor"
+    "x Fervor",
+    "y Fervor",
+    "z Fervor"
 ];
 
 // Render the React application to the DOM
@@ -13,7 +13,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 // You can render either:
 // 1. CounterAppList with multiple counters:
-root.render(<CounterAppList counterTitles={counterTitles} />);
+root.render(<CounterAppList inputCounterTitles={counterTitles} />);
 
 // 2. Or a single CounterApp:
 // root.render(<CounterApp title="My Custom Counter" />);
