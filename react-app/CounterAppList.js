@@ -1,26 +1,55 @@
 // React Components - CounterApp and CounterAppList
 // These components demonstrate React's state management, event handling, and list rendering
 
-const { useState } = React;
+// CHANGE: Added useEffect to sync with parent state changes
+const { useState, useEffect } = React;
 
 // Individual Counter Component
-// Props: title (string) - The title to display for this counter
-function CounterApp({ title = "Interactive Political Simulator" }) {
-    const [count, setCount] = useState(0);
+// CHANGE: Updated to accept initialCount, partyId, and onCountChange props
+// Props: 
+//   - title (string) - The title to display for this counter
+//   - initialCount (number) - Starting count value from parent state
+//   - partyId (number) - Unique ID to identify this counter to parent
+//   - onCountChange (function) - Callback to notify parent of count changes
+function CounterApp({ 
+    title = "Interactive Political Simulator",
+    initialCount = 0,
+    partyId = null,
+    onCountChange = null
+}) {
+    const [count, setCount] = useState(initialCount);
     const [message, setMessage] = useState(title);
 
+    // CHANGE: Sync local count with parent state when initialCount prop changes
+    // This handles cases where parent resets all counters or loads from localStorage
+    // Without this, the counter would show stale data if parent state changes externally
+    useEffect(() => {
+        setCount(initialCount);
+    }, [initialCount]);
+
+    // CHANGE: Helper function to update both local state and notify parent
+    // This ensures the UI updates immediately (local state) while also
+    // propagating changes up to PoliticalSimulator (parent state)
+    const updateCount = (newCount) => {
+        setCount(newCount);
+        // Only call parent callback if it exists and we have a valid partyId
+        if (onCountChange && partyId !== null) {
+            onCountChange(partyId, newCount);
+        }
+    };
+
     const increment = () => {
-        setCount(count + 1);
+        updateCount(count + 1);  // CHANGE: Use updateCount instead of setCount
         setMessage('Counter incremented!');
     };
 
     const decrement = () => {
-        setCount(count - 1);
+        updateCount(count - 1);  // CHANGE: Use updateCount instead of setCount
         setMessage('Counter decremented!');
     };
 
     const reset = () => {
-        setCount(0);
+        updateCount(0);  // CHANGE: Use updateCount instead of setCount
         setMessage('Counter reset to zero!');
     };
 
@@ -45,11 +74,13 @@ function CounterApp({ title = "Interactive Political Simulator" }) {
 }
 
 // Counter List Component
-// Props: counterTitles (array) - Array of strings to create multiple counters
-function CounterAppList({ inputCounterTitles = [] }) {
-    // If no titles provided, show a single default counter
-    const [counterTitles, setTitles] = useState(inputCounterTitles) 
-    if (counterTitles.length === 0) {
+// CHANGE: Updated to accept party objects and callback instead of just titles
+// Props: 
+//   - parties (array) - Array of party objects with id, name, count properties
+//   - onCountChange (function) - Callback to update parent state when count changes
+function CounterAppList({ parties = [], onCountChange = null }) {
+    // If no parties provided, show a single default counter
+    if (parties.length === 0) {
         return (
             <>
                 <CounterApp title="Interactive Counter Component" />
@@ -67,11 +98,18 @@ function CounterAppList({ inputCounterTitles = [] }) {
         );
     }
 
-    // Map over the counterTitles array and create a CounterApp for each title
+    // CHANGE: Map over parties array instead of counterTitles
+    // Pass party data and callback down to each CounterApp
     return (
         <>
-            {counterTitles.map((title, index) => (
-                <CounterApp key={index} title={title} />
+            {parties.map((party) => (
+                <CounterApp 
+                    key={party.id}                        // CHANGE: Use party.id instead of index for stable keys
+                    title={party.name}                    // Pass party name as title
+                    initialCount={party.count}            // CHANGE: Pass the current count from party object
+                    partyId={party.id}                    // CHANGE: Pass party ID so CounterApp can identify itself
+                    onCountChange={onCountChange}         // CHANGE: Pass callback function down
+                />
             ))}
             
         </>
