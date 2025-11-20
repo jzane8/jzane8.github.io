@@ -5,7 +5,7 @@
 const initParties = [
       {
         id: 1,
-        name: "Socialist Fervor",
+        name: "x",
         count: 0,
         position: "left",
         visible: true,
@@ -13,7 +13,7 @@ const initParties = [
         },
         {
         id: 2,
-        name: "Nationalist Fervor",
+        name: "y",
         count: 0,
         position: "right",
         visible: true,

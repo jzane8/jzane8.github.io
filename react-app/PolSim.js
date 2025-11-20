@@ -7,7 +7,7 @@
  *                         Used as the React 'key' prop and for targeting specific parties
  * 
  * @property {string} name - Display name of the party (required)
- *                           Example: "Socialist Fervor", "Liberal Fervor"
+ *                           Example: "x Fervor", "x Fervor"
  * 
  * @property {number} count - Current fervor/counter value (required)
  *                            Represents the party's strength or support level
@@ -25,7 +25,7 @@
  * Example party object:
  * {
  *     id: 1,
- *     name: "Socialist Fervor",
+ *     name: "x Fervor",
  *     count: 0,
  *     position: "left",
  *     visible: true,
@@ -74,6 +74,7 @@
 const { useState, useEffect } = React;
 
 function PoliticalSimulator({ initialParties = null }) {
+    const favorThreshold = 10;
     // Load from localStorage if available, otherwise use initialParties or defaults
     const getInitialState = () => {
         const saved = localStorage.getItem('parties');
@@ -83,6 +84,13 @@ function PoliticalSimulator({ initialParties = null }) {
     };
     
     // CHANGE: Added parliament state initialization with localStorage support
+    
+    
+    const [parties, setParties] = useState(getInitialState());
+    const [nextId, setNextId] = useState(
+        Math.max(...parties.map(p => p.id), 0) + 1
+    );
+    
     const getInitialParliamentState = () => {
         const saved = localStorage.getItem('parliament');
         if (saved) return JSON.parse(saved);
@@ -92,12 +100,7 @@ function PoliticalSimulator({ initialParties = null }) {
             // Add other organizational structures as needed
         };
     };
-    
-    const [parties, setParties] = useState(getInitialState());
-    const [nextId, setNextId] = useState(
-        Math.max(...parties.map(p => p.id), 0) + 1
-    );
-    
+
     // CHANGE: Added parliament state for organizational structure using ID references
     const [parliament, setParliament] = useState(getInitialParliamentState());
     const [nextFactionId, setNextFactionId] = useState(
@@ -192,25 +195,7 @@ function PoliticalSimulator({ initialParties = null }) {
         }
     };
     
-    // ========================================================================
-    // UPDATE PARTY COUNT: Modify the count value for a specific party
-    // ========================================================================
-    // Parameter:
-    //   - partyId: Number, the unique ID of the party to update
-    //   - newCount: Number, the new count value to set
-    // 
-    // CHANGE: Added to enable child components (CounterApp) to update party counts
-    // This creates a two-way data flow: parent passes data down, child calls this
-    // function to update parent state when counter buttons are clicked
-    const updatePartyCount = (partyId, newCount) => {
-        setParties(prevParties => 
-            prevParties.map(party => 
-                party.id === partyId 
-                    ? { ...party, count: newCount }  // Update count for matching party
-                    : party                          // Keep other parties unchanged
-            )
-        );
-    };
+
     
     // ========================================================================
     // PARLIAMENT MANAGEMENT FUNCTIONS
@@ -229,15 +214,42 @@ function PoliticalSimulator({ initialParties = null }) {
     const addFavoredParty = (partyId) => {
         // TODO: Implement - add partyId to parliament.favoredParties array
         // Check if party exists and isn't already favored
-        setParliament
+        const partyExists = parties.some(p => p.id === partyId);
+        if(partyExists) {
+            setParliament(prevParliament => {
+                const alreadyFavored = (parliament.favoredParties).includes(partyId);
+                if(!alreadyFavored) {
+                    return{
+                        ...parliament,
+                        favoredParties: [...parliament.favoredParties, partyId]
+                    };
+                } else {
+                    console.error("Party is already favored.");
+                    return prevParliament;
+                }
+            });
+            
+        } else {
+            console.error("Party ID does not correspond to existing party.");
+        }
+
     };
+    
     
     /**
      * Remove a party from the favored parties list
      * @param {number} partyId - The ID of the party to unfavor
      */
     const removeFavoredParty = (partyId) => {
-        // TODO: Implement - remove partyId from parliament.favoredParties array
+        const alreadyFavored = (parliament.favoredParties).includes(partyId);
+        if (alreadyFavored) {
+            setParliament(prevParliament => {
+                return {
+                ...prevParliament,
+                favoredParties: (prevParliament.favoredParties).filter(p => p.id !== partyId)
+                }
+            })
+        }
     };
     
     /**
@@ -273,6 +285,23 @@ function PoliticalSimulator({ initialParties = null }) {
         // TODO: Implement - create faction object and add to parliament.factions
         // Validate that all party IDs exist
         // Return the new faction ID
+        if (!name || name.trim() === "") {
+            console.error("Must enter faction name.");
+            return null;
+        }
+        const newFaction = {
+            id: nextFactionId,
+            name: name.trim(),
+            memberPartyIds: memberPartyIds
+
+        };
+        setParliament({
+            ...parliament,
+            factions: [...parliament.factions, newFaction]
+        });
+
+        setNextFactionId(nextFactionId + 1);
+        return nextFactionId;
     };
     
     /**
@@ -280,7 +309,10 @@ function PoliticalSimulator({ initialParties = null }) {
      * @param {number} factionId - The ID of the faction to delete
      */
     const deleteFaction = (factionId) => {
-        // TODO: Implement - remove faction from parliament.factions array
+        setParliament({
+            ...parliament,
+            factions: parliament.factions.filter(f => f.id !== factionId)
+        })
     };
     
     /**
@@ -291,6 +323,16 @@ function PoliticalSimulator({ initialParties = null }) {
     const addPartyToFaction = (factionId, partyId) => {
         // TODO: Implement - add partyId to faction's memberPartyIds array
         // Check if party exists and isn't already in faction
+        setParliament(prevParliament => ({
+            ...prevParliament,
+            factions: prevParliament.factions.map(f => 
+                f.id === factionId ?
+                { 
+                    ...f,
+                    memberPartyIds: [...f.memberPartyIds, partyId]
+                }: f
+            )
+        }));
     };
     
     /**
@@ -300,8 +342,41 @@ function PoliticalSimulator({ initialParties = null }) {
      */
     const removePartyFromFaction = (factionId, partyId) => {
         // TODO: Implement - remove partyId from faction's memberPartyIds array
+        setParliament(prevParliament => ({
+            ...prevParliament,
+            factions: prevParliament.factions.map( fac => 
+                fac.id === factionId ? 
+                {
+                    ...fac,
+                    memberPartyIds: fac.memberPartyIds.filter(p => p === partyId)
+                } : fac
+            )
+        }))
     };
-    
+        // ========================================================================
+    // UPDATE PARTY COUNT: Modify the count value for a specific party
+    // ========================================================================
+    // Parameter:
+    //   - partyId: Number, the unique ID of the party to update
+    //   - newCount: Number, the new count value to set
+    // 
+    // CHANGE: Added to enable child components (CounterApp) to update party counts
+    // This creates a two-way data flow: parent passes data down, child calls this
+    // function to update parent state when counter buttons are clicked
+    const updatePartyCount = (partyId, newCount) => {
+        setParties(prevParties => 
+            prevParties.map(party => 
+                party.id === partyId 
+                    ? { ...party, count: newCount }  // Update count for matching party
+                    : party                          // Keep other parties unchanged
+            )
+        );
+        if(newCount >= favorThreshold) {
+            addFavoredParty(partyId);    
+        }
+            
+        
+    };
     /**
      * Get full party objects for all members of a faction
      * @param {number} factionId - The ID of the faction
@@ -317,8 +392,15 @@ function PoliticalSimulator({ initialParties = null }) {
     };
     return (
         <div>
-        <h2>Empowered party</h2>
-        {/* CHANGE: Pass full party objects instead of just titles, and pass update callback */}
+        <h2>Favored Parties</h2>
+        {/* CHANGE: Pass full party objects instead of just titles, and pass update callback */
+        getFavoredParties().map(party => (
+            <div key={party.id}>
+                {party.name}
+                <button className="debug" onClick={() => removeFavoredParty(party.id)}>Remove</button>
+            </div>
+        ))
+        }
         {/* This allows CounterApp to access party.count and update it via updatePartyCount */}
         <CounterAppList 
             parties={parties}                    // Pass full party objects with id, name, count
