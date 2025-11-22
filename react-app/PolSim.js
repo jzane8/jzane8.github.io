@@ -220,8 +220,8 @@ function PoliticalSimulator({ initialParties = null }) {
                 const alreadyFavored = (parliament.favoredParties).includes(partyId);
                 if(!alreadyFavored) {
                     return{
-                        ...parliament,
-                        favoredParties: [...parliament.favoredParties, partyId]
+                        ...prevParliament,
+                        favoredParties: [...prevParliament.favoredParties, partyId]
                     };
                 } else {
                     console.error("Party is already favored.");
@@ -396,7 +396,7 @@ function PoliticalSimulator({ initialParties = null }) {
         {/* CHANGE: Pass full party objects instead of just titles, and pass update callback */
         getFavoredParties().map(party => (
             <div key={party.id}>
-                {party.name}
+                {party.name} Current Favor: {party.count}
                 <button className="debug" onClick={() => removeFavoredParty(party.id)}>Remove</button>
             </div>
         ))
