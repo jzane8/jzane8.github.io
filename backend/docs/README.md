@@ -213,17 +213,28 @@ curl -X GET http://localhost:3001/api/state \
 
 ## Deployment
 
-This backend needs to be deployed to a Node.js hosting service. Recommended options:
+This backend is ready to be deployed to a Node.js hosting service. **See [DEPLOYMENT.md](./DEPLOYMENT.md) for a complete step-by-step deployment guide.**
 
-- **Railway** (https://railway.app) - Free tier available
-- **Render** (https://render.com) - Free tier available
-- **Heroku** (https://heroku.com) - Free tier available
-- **DigitalOcean App Platform**
+### Quick Recommendations:
 
-After deployment, update the `FRONTEND_URL` in your production `.env` to your GitHub Pages URL:
+**Best Option: Railway.app** ⭐
+- $5/month free credits (enough for personal projects)
+- Native MySQL support (no migration needed)
+- No cold starts
+- Simple GitHub deployment
+- **[Full deployment guide →](./DEPLOYMENT.md)**
+
+**Alternative Options:**
+- **Render.com** - Free tier with cold starts, PostgreSQL only
+- **Fly.io** - Free tier with 3 VMs, good performance
+- **DigitalOcean** - $5/month for app + $15/month for database
+
+After deployment, update the `FRONTEND_URL` in your production environment variables to your GitHub Pages URL:
 ```env
 FRONTEND_URL=https://jzane8.github.io
 ```
+
+**📖 [Read the complete deployment guide](./DEPLOYMENT.md)** for detailed instructions, troubleshooting, and cost estimates.
 
 ## Project Structure
 
