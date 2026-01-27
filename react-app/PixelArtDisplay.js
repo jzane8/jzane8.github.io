@@ -23,7 +23,9 @@ const { useState, useEffect, useCallback } = React;
 // PIXELARTDISPLAY COMPONENT
 // ============================================================================
 // Main component that manages ASCII art input and display
-function PixelArtDisplay() {
+// Props:
+// - onAsciiChange: callback function to notify parent component of ASCII art changes
+function PixelArtDisplay({ onAsciiChange }) {
     // ========================================================================
     // URL PARAMETER PARSING
     // ========================================================================
@@ -88,11 +90,16 @@ function PixelArtDisplay() {
     const [zoom, setZoom] = useState(1);
     
     // Save to localStorage whenever ASCII art changes
+    // Also notify parent component via onAsciiChange callback
     // useEffect runs after render when asciiText dependency changes
     // https://react.dev/reference/react/useEffect
     useEffect(() => {
         localStorage.setItem('asciiArt', asciiText);
-    }, [asciiText]);
+        // Notify parent component of ASCII art changes if callback is provided
+        if (onAsciiChange) {
+            onAsciiChange(asciiText);
+        }
+    }, [asciiText, onAsciiChange]);
     
     // Handle text input changes
     // useCallback memoizes the function to prevent recreation on every render

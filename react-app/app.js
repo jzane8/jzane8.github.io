@@ -3,8 +3,10 @@
 
 // Import React hooks for state management
 // useState: manages component state (secret code entered status)
+// useEffect: monitors changes to ASCII art to check for secret code
 // https://react.dev/reference/react/useState
-const { useState } = React;
+// https://react.dev/reference/react/useEffect
+const { useState, useEffect } = React;
 
 // Define counter titles array for PoliticalSimulator
 const initParties = [
@@ -38,74 +40,38 @@ function App() {
     // Initially false, so PixelArtDisplay shows by default
     const [secretCodeEntered, setSecretCodeEntered] = useState(false);
     
-    // State for the text input field
-    const [inputValue, setInputValue] = useState('');
-    
     // State for feedback message
     const [message, setMessage] = useState('');
     
-    // Handle input change
-    // Updates inputValue state as user types
-    const handleInputChange = (e) => {
-        setInputValue(e.target.value);
-        setMessage(''); // Clear message when user types
-    };
+    // State to hold the current ASCII art text from PixelArtDisplay
+    // This will be monitored for the secret code
+    const [currentAsciiArt, setCurrentAsciiArt] = useState('');
     
-    // Handle form submission
-    // Checks if entered code matches SECRET_CODE
-    const handleSubmit = (e) => {
-        e.preventDefault(); // Prevent page reload on form submit
-        
-        // Check if input matches secret code (case-sensitive)
-        if (inputValue.trim() === SECRET_CODE) {
+    // Effect to monitor ASCII art changes and check for secret code
+    // This runs whenever currentAsciiArt changes
+    useEffect(() => {
+        // Check if the ASCII art contains the exact secret code
+        // Must match exactly (case-sensitive, no partial matches)
+        if (currentAsciiArt === SECRET_CODE) {
             setSecretCodeEntered(true);
-            setMessage('Access granted!');
-            setInputValue(''); // Clear input field
-        } else {
-            setMessage('Invalid code. Try again.');
-            // Optional: clear input after failed attempt
-            // setInputValue('');
+            setMessage('Access granted! Secret code detected in ASCII art.');
         }
-    };
+    }, [currentAsciiArt]);
     
     // Toggle back to ASCII display
     const handleBackToAscii = () => {
         setSecretCodeEntered(false);
-        setInputValue('');
         setMessage('');
     };
     
     return (
         <div>
-            {/* Secret Code Input Section - Always visible at top */}
-            <div className="secret-code-section">
-                <form onSubmit={handleSubmit} className="secret-code-form">
-                    <label htmlFor="secret-code-input">
-                        <strong>Enter Command:</strong>
-                    </label>
-                    <div className="secret-code-input-group">
-                        <input
-                            id="secret-code-input"
-                            type="text"
-                            value={inputValue}
-                            onChange={handleInputChange}
-                            placeholder="Type command here..."
-                            className="secret-code-input"
-                        />
-                        <button type="submit" className="react-button">
-                            Execute
-                        </button>
-                    </div>
-                    {/* Feedback message */}
-                    {message && (
-                        <p className={`secret-code-message ${secretCodeEntered ? 'success' : 'error'}`}>
-                            {message}
-                        </p>
-                    )}
-                </form>
-                
-                {/* Toggle button - only show when PoliticalSimulator is active */}
-                {secretCodeEntered && (
+            {/* Feedback message - only show when secret code is detected */}
+            {message && (
+                <div className="secret-code-section">
+                    <p className="secret-code-message success">
+                        {message}
+                    </p>
                     <button 
                         className="react-button" 
                         onClick={handleBackToAscii}
@@ -113,15 +79,16 @@ function App() {
                     >
                         ← Back to ASCII Display
                     </button>
-                )}
-            </div>
+                </div>
+            )}
             
             {/* Conditional Rendering based on secret code */}
             {/* If secret code entered, show PoliticalSimulator, else show PixelArtDisplay */}
+            {/* Pass setCurrentAsciiArt callback to PixelArtDisplay so it can notify parent of changes */}
             {secretCodeEntered ? (
                 <PoliticalSimulator initialParties={initParties} />
             ) : (
-                <PixelArtDisplay />
+                <PixelArtDisplay onAsciiChange={setCurrentAsciiArt} />
             )}
         </div>
     );
