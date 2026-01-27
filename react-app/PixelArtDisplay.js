@@ -89,6 +89,16 @@ function PixelArtDisplay({ onAsciiChange }) {
     // Zoom level state (1 = 100%, 1.5 = 150%, etc.)
     const [zoom, setZoom] = useState(1);
     
+    // State for accordion - collapsed by default if URL parameter is present
+    // Check if URL has 'art' parameter to determine initial state
+    const hasUrlParameter = new URLSearchParams(window.location.search).has('art');
+    const [isAccordionOpen, setIsAccordionOpen] = useState(!hasUrlParameter);
+    
+    // Toggle accordion open/closed state
+    const toggleAccordion = () => {
+        setIsAccordionOpen(prev => !prev);
+    };
+    
     // Save to localStorage whenever ASCII art changes
     // Also notify parent component via onAsciiChange callback
     // useEffect runs after render when asciiText dependency changes
@@ -371,20 +381,55 @@ function PixelArtDisplay({ onAsciiChange }) {
                 </div>
             </div>
             
-            {/* Text Input Area */}
+            {/* Text Input Area with Accordion */}
             <div className="pixel-input-section">
-                <label htmlFor="ascii-input">
-                    <strong>Enter ASCII Art:</strong>
-                </label>
-                <textarea
-                    id="ascii-input"
-                    className="pixel-textarea"
-                    value={asciiText}
-                    onChange={handleTextChange}
-                    placeholder="Type or paste your ASCII art here..."
-                    spellCheck="false"
-                    rows={15}
-                />
+                {/* Accordion Toggle Button - only show if URL parameter exists */}
+                {hasUrlParameter && (
+                    <button 
+                        onClick={toggleAccordion}
+                        className="accordion-toggle"
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '10px 15px',
+                            marginBottom: '10px',
+                            background: '#007bff',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontSize: '1em',
+                            fontWeight: '600',
+                            transition: 'background 0.3s'
+                        }}
+                        onMouseEnter={(e) => e.target.style.background = '#0056b3'}
+                        onMouseLeave={(e) => e.target.style.background = '#007bff'}
+                    >
+                        <span style={{ 
+                            transform: isAccordionOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                            transition: 'transform 0.3s',
+                            display: 'inline-block'
+                        }}>
+                            ▼
+                        </span>
+                        {isAccordionOpen ? 'Hide' : 'Show'} Text Editor
+                    </button>
+                )}
+                
+                {/* Collapsible Text Input */}
+                {/* Show by default if no URL parameter, or if accordion is open */}
+                {(!hasUrlParameter || isAccordionOpen) && (
+                    <textarea
+                        id="ascii-input"
+                        className="pixel-textarea"
+                        value={asciiText}
+                        onChange={handleTextChange}
+                        placeholder="Type or paste your ASCII art here..."
+                        spellCheck="false"
+                        rows={15}
+                    />
+                )}
             </div>
         </div>
     );
