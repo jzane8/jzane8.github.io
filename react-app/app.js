@@ -13,7 +13,7 @@ const initParties = [
         name: "x",
         count: 0,
         position: "left",
-        visible:SC true,
+        visible: true,
         color: "#35bbdcff"
         },
         {
