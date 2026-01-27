@@ -7,9 +7,9 @@
     <link rel="stylesheet" href="../css/jakestyle.css">
     <style>
         .react-container {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px;
         }
         
         .react-demo {
@@ -69,8 +69,8 @@
         /* Container for the entire pixel art component */
         .pixel-art-container {
             max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
+            margin: 0 auto;
+            padding: 10px;
         }
         
         /* Control panel with buttons and zoom controls */
@@ -78,9 +78,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 10px;
         }
         
         /* Zoom control buttons group */
@@ -96,14 +96,17 @@
         }
         
         /* Wrapper for the pixel display with overflow handling */
+        /* Highlighted as a key component */
         .pixel-display-wrapper {
             background: #1e1e1e;
             border-radius: 8px;
-            padding: 30px;
-            margin: 20px 0;
+            padding: 25px;
+            margin: 10px 0;
             overflow: auto;
-            min-height: 200px;
-            max-height: 600px;
+            min-height: 150px;
+            max-height: 500px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 2px solid #007bff;
         }
         
         /* The actual pixel display grid */
@@ -127,20 +130,23 @@
         }
         
         /* Text input section */
+        /* Highlighted as a key component */
         .pixel-input-section {
-            margin: 20px 0;
+            margin: 10px 0;
         }
         
         .pixel-input-section label {
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-size: 1.1em;
+            font-weight: 600;
         }
         
         /* Textarea for ASCII art input */
+        /* Highlighted with enhanced border and shadow */
         .pixel-textarea {
             width: 100%;
-            min-height: 300px;
+            min-height: 250px;
             padding: 15px;
             font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
             font-size: 14px;
@@ -150,12 +156,13 @@
             resize: vertical;
             background: #f8f9fa;
             color: #333;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .pixel-textarea:focus {
             outline: none;
             border-color: #0056b3;
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         /* ===== SECRET CODE SECTION STYLES ===== */

@@ -222,28 +222,28 @@ function PixelArtDisplay({ onAsciiChange }) {
     const maxLineLength = Math.max(...lines.map(line => line.length), 0);
     
     return (
-        <div className="pixel-art-container">
+        <div className="pixel-art-container" style={{ padding: '10px', margin: '0 auto' }}>
             
             {/* Control Panel */}
-            <div className="pixel-controls">
+            <div className="pixel-controls" style={{ marginBottom: '10px', gap: '10px' }}>
                 <div className="button-group">
                     <button className="react-button" onClick={handleClear}>
                         Clear
                     </button>
                     <button className="react-button" onClick={handleReset}>
-                        Reset to Example
+                        Reset
                     </button>
                     <button 
                         className="react-button" 
                         onClick={handleGenerateShareLink}
                         style={{ background: '#28a745' }}
                     >
-                        📋 Generate Share Link
+                        📋 Share
                     </button>
                 </div>
                 
                 <div className="zoom-controls">
-                    <span style={{ marginRight: '10px' }}>Zoom: {Math.round(zoom * 100)}%</span>
+                    <span style={{ marginRight: '8px', fontSize: '0.9em' }}>Zoom: {Math.round(zoom * 100)}%</span>
                     <button className="react-button" onClick={handleZoomOut}>-</button>
                     <button className="react-button" onClick={handleZoomReset}>100%</button>
                     <button className="react-button" onClick={handleZoomIn}>+</button>
