@@ -64,6 +64,189 @@
             margin: 20px 0;
             border-left: 4px solid #007bff;
         }
+        
+        /* ===== PIXEL ART DISPLAY STYLES ===== */
+        /* Container for the entire pixel art component */
+        .pixel-art-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        
+        /* Control panel with buttons and zoom controls */
+        .pixel-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        /* Zoom control buttons group */
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .zoom-controls button {
+            padding: 8px 16px;
+            min-width: 50px;
+        }
+        
+        /* Wrapper for the pixel display with overflow handling */
+        .pixel-display-wrapper {
+            background: #1e1e1e;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 20px 0;
+            overflow: auto;
+            min-height: 200px;
+            max-height: 600px;
+        }
+        
+        /* The actual pixel display grid */
+        /* Uses CSS Grid for perfect character alignment */
+        .pixel-display {
+            display: grid;
+            font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+            font-size: 16px;
+            line-height: 1;
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00;
+            white-space: pre;
+            width: fit-content;
+            transition: transform 0.2s ease;
+        }
+        
+        /* Individual character cells in the grid */
+        .pixel-char {
+            display: inline-block;
+            text-align: center;
+        }
+        
+        /* Text input section */
+        .pixel-input-section {
+            margin: 20px 0;
+        }
+        
+        .pixel-input-section label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        /* Textarea for ASCII art input */
+        .pixel-textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 15px;
+            font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            resize: vertical;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        .pixel-textarea:focus {
+            outline: none;
+            border-color: #0056b3;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+        
+        /* ===== SECRET CODE SECTION STYLES ===== */
+        /* Container for secret code input */
+        .secret-code-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 2px solid #dee2e6;
+        }
+        
+        .secret-code-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .secret-code-form label {
+            font-size: 1.1em;
+            color: #333;
+        }
+        
+        /* Input group with text field and button */
+        .secret-code-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+        }
+        
+        /* Secret code text input */
+        .secret-code-input {
+            flex: 1;
+            padding: 12px 16px;
+            font-size: 1em;
+            font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+            border: 2px solid #ced4da;
+            border-radius: 4px;
+            background: white;
+            transition: border-color 0.3s;
+        }
+        
+        .secret-code-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+        
+        /* Feedback message styling */
+        .secret-code-message {
+            margin: 10px 0 0 0;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        .secret-code-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .secret-code-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Responsive design for mobile */
+        @media (max-width: 768px) {
+            .pixel-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .zoom-controls {
+                justify-content: center;
+            }
+            
+            .pixel-display-wrapper {
+                padding: 15px;
+            }
+            
+            .pixel-display {
+                font-size: 12px;
+            }
+            
+            .secret-code-input-group {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 <body>
@@ -114,12 +297,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="../js/jakescript.js"></script>
 
-    <!-- React Application - Component Definition -->
+    <!-- React Application - Component Definitions -->
+    <!-- Load PixelArtDisplay first, before app.js needs it -->
+    <script type="text/babel" src="PixelArtDisplay.js"></script>
     <script type="text/babel" src="CounterAppList.js"></script>
-        <script type="text/babel" src="PolSim.js"></script>
+    <script type="text/babel" src="PolSim.js"></script>
 
-    
     <!-- React Application - Main Entry Point -->
+    <!-- This must load last as it depends on all components above -->
     <script type="text/babel" src="app.js"></script>
 </body>
 </html>
