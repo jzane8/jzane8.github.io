@@ -66,27 +66,25 @@ function App() {
     
     return (
         <div>
-            {/* Feedback message - only show when secret code is detected */}
-            {message && (
-                <div className="secret-code-section">
-                    <p className="secret-code-message success">
-                        {message}
-                    </p>
-                    <button 
-                        className="react-button" 
-                        onClick={handleBackToAscii}
-                        style={{ marginTop: '10px' }}
-                    >
-                        ← Back to ASCII Display
-                    </button>
-                </div>
-            )}
-            
             {/* Conditional Rendering based on secret code */}
             {/* If secret code entered, show PoliticalSimulator, else show PixelArtDisplay */}
             {/* Pass setCurrentAsciiArt callback to PixelArtDisplay so it can notify parent of changes */}
             {secretCodeEntered ? (
-                <PoliticalSimulator initialParties={initParties} />
+                <div>
+                    <div className="secret-code-section">
+                        <p className="secret-code-message success">
+                            {message}
+                        </p>
+                        <button 
+                            className="react-button" 
+                            onClick={handleBackToAscii}
+                            style={{ marginTop: '10px' }}
+                        >
+                            ← Back to ASCII Display
+                        </button>
+                    </div>
+                    <PoliticalSimulator initialParties={initParties} />
+                </div>
             ) : (
                 <PixelArtDisplay onAsciiChange={setCurrentAsciiArt} />
             )}
