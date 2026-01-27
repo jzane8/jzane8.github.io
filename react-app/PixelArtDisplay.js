@@ -223,7 +223,6 @@ function PixelArtDisplay({ onAsciiChange }) {
     
     return (
         <div className="pixel-art-container">
-            <h3>ASCII Art Pixel Display</h3>
             
             {/* Control Panel */}
             <div className="pixel-controls">
