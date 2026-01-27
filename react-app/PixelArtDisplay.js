@@ -386,18 +386,6 @@ function PixelArtDisplay({ onAsciiChange }) {
                     rows={15}
                 />
             </div>
-            
-            {/* Info Box */}
-            <div className="info-box" style={{ marginTop: '20px' }}>
-                <h4>How to Use:</h4>
-                <ul>
-                    <li>Type or paste ASCII art in the text area below</li>
-                    <li>The display above updates in real-time</li>
-                    <li>Use zoom controls to adjust size</li>
-                    <li>Your art is automatically saved to browser storage</li>
-                    <li>Try ASCII art generators online for complex designs!</li>
-                </ul>
-            </div>
         </div>
     );
 }
