@@ -13,9 +13,14 @@ const register = async (req, res, next) => {
         if (!username || !password) {
             return res.status(400).json({ error: 'Username and password required' });
         }
-        
-        if (password.length < 6) {
-            return res.status(400).json({ error: 'Password must be at least 6 characters' });
+
+        // Username: alphanumeric, 3-30 characters
+        if (typeof username !== 'string' || !/^[a-zA-Z0-9_]{3,30}$/.test(username)) {
+            return res.status(400).json({ error: 'Username must be 3-30 alphanumeric characters or underscores' });
+        }
+
+        if (password.length < 6 || password.length > 72) {
+            return res.status(400).json({ error: 'Password must be 6-72 characters' });
         }
         
         // Check if username already exists

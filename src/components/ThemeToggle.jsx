@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { usePuzzle } from '../hooks/usePuzzle';
@@ -18,17 +18,30 @@ export default function ThemeToggle() {
   const [showCooldown, setShowCooldown] = useState(false);
   const [showCheat, setShowCheat] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const timeoutRefs = useRef([]);
+
+  // Helper to track timeouts for cleanup
+  const safeTimeout = useCallback((fn, delay) => {
+    const id = setTimeout(fn, delay);
+    timeoutRefs.current.push(id);
+    return id;
+  }, []);
+
+  // Clear all pending timeouts on unmount
+  useEffect(() => {
+    return () => timeoutRefs.current.forEach(clearTimeout);
+  }, []);
 
   // Listen for cheat code activation
   useEffect(() => {
     function onCheat() {
       setShowCheat(true);
       setShowCooldown(false);
-      setTimeout(() => setShowCheat(false), 3000);
+      safeTimeout(() => setShowCheat(false), 3000);
     }
     window.addEventListener('cheat-activated', onCheat);
     return () => window.removeEventListener('cheat-activated', onCheat);
-  }, []);
+  }, [safeTimeout]);
 
   const handleClick = useCallback(() => {
     if (puzzle.isInCooldown()) {
@@ -40,15 +53,14 @@ export default function ThemeToggle() {
 
   const handlePuzzleSuccess = useCallback(() => {
     setShowPuzzle(false);
-    // Heart animation
     createHeartAnimation();
     activateSoniaTheme();
-    setTimeout(() => setShowSuccess(true), 400);
-  }, [activateSoniaTheme]);
+    safeTimeout(() => setShowSuccess(true), 400);
+  }, [activateSoniaTheme, safeTimeout]);
 
   const handlePuzzleFailure = useCallback(() => {
-    setTimeout(() => setShowPuzzle(false), 2000);
-  }, []);
+    safeTimeout(() => setShowPuzzle(false), 2000);
+  }, [safeTimeout]);
 
   return (
     <>

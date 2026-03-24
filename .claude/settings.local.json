@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"C:\\\\Users\\\\jakezane\\\\Documents\\\\Github Repos\\\\jzane8.github.io\" && mkdir -p src/components src/pages src/context src/hooks src/styles public/images .github/workflows)",
+      "Bash(cd \"C:\\\\Users\\\\jakezane\\\\Documents\\\\Github Repos\\\\jzane8.github.io\" && npm install 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\jakezane\\\\Documents\\\\Github Repos\\\\jzane8.github.io\" && npx vite build 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\jakezane\\\\Documents\\\\Github Repos\\\\jzane8.github.io\" && timeout 5 npx vite --host 2>&1 || true)",
+      "Bash(cd:*)",
+      "Bash(npm run:*)"
+    ]
+  }
+}

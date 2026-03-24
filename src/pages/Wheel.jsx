@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 
 /**
  * Wheel of Fortune standalone page.
@@ -73,7 +73,20 @@ export default function Wheel() {
 
     setTimeout(() => {
       setIsSpinning(false);
-      setResultMsg('Spin complete! The wheel has spoken.');
+      // Calculate which slice the pointer landed on
+      // The pointer is at the top (0 degrees / 360 degrees)
+      // The wheel rotates clockwise, so we need to find which section is at the top
+      const finalAngle = (360 - (total % 360)) % 360;
+      let cumulative = 0;
+      let winner = wheelData[0];
+      for (const section of wheelData) {
+        cumulative += (section.percentage / 100) * 360;
+        if (finalAngle < cumulative) {
+          winner = section;
+          break;
+        }
+      }
+      setResultMsg(`Result: ${winner.text}`);
     }, 4000);
   };
 
@@ -82,8 +95,8 @@ export default function Wheel() {
     setTimeout(() => setCoinFace(Math.random() < 0.5 ? 'heads' : 'tails'), 1000);
   };
 
-  // Build SVG paths
-  const renderSections = () => {
+  // Build SVG paths (memoized to avoid recalculation during spin animation)
+  const renderSections = useMemo(() => () => {
     const cx = 200, cy = 200, r = 180;
     let currentAngle = -90;
     return wheelData.map((section, idx) => {
@@ -132,7 +145,7 @@ export default function Wheel() {
         </g>
       );
     });
-  };
+  }, [wheelData, severity]);
 
   return (
     <div style={styles.page}>

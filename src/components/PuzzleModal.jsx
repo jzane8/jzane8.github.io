@@ -136,6 +136,7 @@ function MathPuzzle({ onSuccess, onFailure }) {
 /* ---------- Memory: remember & repeat a color sequence ---------- */
 function MemoryPuzzle({ onSuccess, onFailure }) {
   const COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD'];
+  const COLOR_NAMES = { '#FF6B6B': 'Red', '#4ECDC4': 'Teal', '#45B7D1': 'Blue', '#96CEB4': 'Green', '#FFEAA7': 'Yellow', '#DDA0DD': 'Purple' };
   const [sequence] = useState(() =>
     Array.from({ length: 6 }, () => COLORS[Math.floor(Math.random() * COLORS.length)])
   );
@@ -193,6 +194,7 @@ function MemoryPuzzle({ onSuccess, onFailure }) {
             <button
               key={c}
               onClick={() => pick(c)}
+              aria-label={COLOR_NAMES[c] || c}
               style={{
                 width: 30, height: 30, background: c,
                 border: '2px solid #333', borderRadius: 3, cursor: 'pointer',

@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import About from './pages/About';
 import Projects from './pages/Projects';
@@ -31,6 +31,9 @@ export default function App() {
       {/* Standalone pages (no shared layout) */}
       <Route path="wheel" element={<Wheel />} />
       <Route path="secrets" element={<Secrets />} />
+
+      {/* Catch-all: redirect unknown routes to home */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

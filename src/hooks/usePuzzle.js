@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 
 const STORAGE_KEY = 'wheelPuzzleSession';
 const BASE_COOLDOWN = 30000; // 30 seconds
@@ -74,6 +74,11 @@ export function usePuzzle() {
         ],
       };
 
+      // Cap history at 50 entries
+      if (next.puzzleHistory.length > 50) {
+        next.puzzleHistory = next.puzzleHistory.slice(-50);
+      }
+
       if (success) {
         next.lastSuccessTime = Date.now();
         next.failureCount = Math.max(0, prev.failureCount - 1);
@@ -143,7 +148,7 @@ export function usePuzzle() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [clearCooldown]);
 
-  return {
+  return useMemo(() => ({
     session,
     isInCooldown,
     getRemainingCooldown,
@@ -152,5 +157,5 @@ export function usePuzzle() {
     clearCooldown,
     getAvailablePuzzles,
     getDifficultyLevel,
-  };
+  }), [session, isInCooldown, getRemainingCooldown, recordAttempt, resetSession, clearCooldown, getAvailablePuzzles, getDifficultyLevel]);
 }

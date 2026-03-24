@@ -9,8 +9,12 @@ import { useState, useEffect, useCallback, memo } from 'react';
  */
 function PixelArtDisplay({ onAsciiChange }) {
   // Parse ?art= URL parameter (Base64-encoded)
+  // HashRouter puts params in the hash, so we parse from there
   const getArtFromURL = () => {
-    const params = new URLSearchParams(window.location.search);
+    const hash = window.location.hash;
+    const queryIndex = hash.indexOf('?');
+    if (queryIndex === -1) return null;
+    const params = new URLSearchParams(hash.substring(queryIndex));
     const encoded = params.get('art');
     if (!encoded) return null;
     try {
@@ -36,7 +40,11 @@ function PixelArtDisplay({ onAsciiChange }) {
   const [isShortening, setIsShortening] = useState(false);
   const [zoom, setZoom] = useState(1);
 
-  const hasUrlParam = new URLSearchParams(window.location.search).has('art');
+  const hasUrlParam = (() => {
+    const hash = window.location.hash;
+    const qi = hash.indexOf('?');
+    return qi !== -1 && new URLSearchParams(hash.substring(qi)).has('art');
+  })();
   const [accordionOpen, setAccordionOpen] = useState(!hasUrlParam);
 
   // Persist & notify parent
@@ -51,7 +59,8 @@ function PixelArtDisplay({ onAsciiChange }) {
   const generateShareLink = async () => {
     try {
       const encoded = btoa(unescape(encodeURIComponent(asciiText)));
-      const url = `${window.location.origin}${window.location.pathname}?art=${encodeURIComponent(encoded)}`;
+      const hashPath = window.location.hash.split('?')[0] || '#/react-demo';
+      const url = `${window.location.origin}${window.location.pathname}${hashPath}?art=${encodeURIComponent(encoded)}`;
       setShareUrl(url);
       setShowShareUrl(true);
       setCopyMessage('Full URL ready. Generating shortened URL...');

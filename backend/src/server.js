@@ -10,16 +10,25 @@ const errorHandler = require('./middleware/errorHandler');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Validate required environment variables at startup
+const requiredEnvVars = ['JWT_SECRET', 'DB_HOST', 'DB_USER', 'DB_NAME'];
+for (const envVar of requiredEnvVars) {
+    if (!process.env[envVar]) {
+        console.error(`Missing required environment variable: ${envVar}`);
+        process.exit(1);
+    }
+}
+
 // Middleware
 // Parse JSON request bodies
 // https://expressjs.com/en/api.html#express.json
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 
 // Enable CORS for frontend requests
 // Allows your React app to make requests to this API
 // https://expressjs.com/en/resources/middleware/cors.html
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
     credentials: true  // Allow cookies/auth headers
 }));
 

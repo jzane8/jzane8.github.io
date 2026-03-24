@@ -62,9 +62,9 @@ export default function Layout() {
       </div>
 
       {/* Page Content */}
-      <div className="body">
+      <main className="body">
         <Outlet />
-      </div>
+      </main>
 
       {/* Theme toggle / puzzle button */}
       <ThemeToggle />

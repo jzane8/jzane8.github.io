@@ -22,7 +22,9 @@ export default function Secrets() {
       {!entered ? (
         <div style={styles.passwordBox}>
           <h1 style={{ color: '#333', marginBottom: 30, fontSize: '2.5em' }}>Secrets</h1>
+          <label htmlFor="secrets-pw" style={{ display: 'none' }}>Password</label>
           <input
+            id="secrets-pw"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -55,6 +57,8 @@ function Game({ useStickFigure }) {
     () => parseInt(localStorage.getItem('ballStepperHighScore'), 10) || 0
   );
   const [gameOver, setGameOver] = useState(false);
+
+  const [restartCount, setRestartCount] = useState(0);
 
   const draw = useCallback((ctx) => {
     const s = state.current;
@@ -114,10 +118,14 @@ function Game({ useStickFigure }) {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let animId;
+    let lastTime = 0;
 
     function loop(time) {
       const s = state.current;
       if (!s.running) return;
+
+      const delta = lastTime ? time - lastTime : 16;
+      lastTime = time;
 
       // Physics
       if (s.player.jumping) {
@@ -132,7 +140,7 @@ function Game({ useStickFigure }) {
       }
 
       // Spawn
-      s.spawnTimer += 16;
+      s.spawnTimer += delta;
       if (s.spawnTimer >= 1500) {
         const size = Math.random() * 30 + 20;
         s.obstacles.push({
@@ -182,7 +190,7 @@ function Game({ useStickFigure }) {
 
     animId = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(animId);
-  }, [draw]);
+  }, [draw, restartCount]);
 
   // Keyboard
   useEffect(() => {
@@ -208,6 +216,7 @@ function Game({ useStickFigure }) {
     s.running = true;
     setScore(0);
     setGameOver(false);
+    setRestartCount((c) => c + 1);
   }
 
   return (
@@ -220,6 +229,8 @@ function Game({ useStickFigure }) {
         ref={canvasRef}
         width={800}
         height={400}
+        role="img"
+        aria-label="Platformer game - press spacebar to jump over obstacles"
         style={{
           border: '3px solid #333',
           borderRadius: 10,

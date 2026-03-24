@@ -47,18 +47,20 @@ export default function PolSim({ initialParties = [] }) {
   const addParty = useCallback(
     (name, position = 'center', color = null) => {
       if (!name?.trim()) return;
-      const newParty = {
-        id: nextId,
-        name: name.trim(),
-        count: 0,
-        position,
-        visible: true,
-        ...(color && { color }),
-      };
-      setParties((prev) => [...prev, newParty]);
-      setNextId((id) => id + 1);
+      setNextId((prevId) => {
+        const newParty = {
+          id: prevId,
+          name: name.trim(),
+          count: 0,
+          position,
+          visible: true,
+          ...(color && { color }),
+        };
+        setParties((prev) => [...prev, newParty]);
+        return prevId + 1;
+      });
     },
-    [nextId]
+    []
   );
 
   const deleteParty = useCallback((id) => {
@@ -172,16 +174,17 @@ export default function PolSim({ initialParties = [] }) {
           <input
             type="text"
             placeholder="Party name"
+            aria-label="Party name"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             style={{ padding: 8, borderRadius: 4, border: '1px solid #ccc', flex: 1, minWidth: 120 }}
           />
-          <select value={newPos} onChange={(e) => setNewPos(e.target.value)} style={{ padding: 8, borderRadius: 4 }}>
+          <select value={newPos} onChange={(e) => setNewPos(e.target.value)} aria-label="Political position" style={{ padding: 8, borderRadius: 4 }}>
             <option value="left">Left</option>
             <option value="center">Center</option>
             <option value="right">Right</option>
           </select>
-          <input type="color" value={newColor} onChange={(e) => setNewColor(e.target.value)} />
+          <input type="color" value={newColor} onChange={(e) => setNewColor(e.target.value)} aria-label="Party color" />
           <button
             className="react-button"
             onClick={() => {
@@ -196,12 +199,14 @@ export default function PolSim({ initialParties = [] }) {
 
       {/* Favored Parties */}
       <h3>Favored Parties</h3>
-      {getFavoredParties().length === 0 ? (
+      {(() => {
+        const favored = getFavoredParties();
+        return favored.length === 0 ? (
         <p style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
           No parties above threshold ({FAVOR_THRESHOLD}) yet.
         </p>
       ) : (
-        getFavoredParties().map((party) => (
+        favored.map((party) => (
           <div
             key={party.id}
             style={{
@@ -227,7 +232,8 @@ export default function PolSim({ initialParties = [] }) {
             </button>
           </div>
         ))
-      )}
+      );
+      })()}
 
       {/* Party counters */}
       <CounterAppList parties={parties} onCountChange={updatePartyCount} />

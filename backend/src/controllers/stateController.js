@@ -27,10 +27,10 @@ const saveState = async (req, res, next) => {
         // https://dev.mysql.com/doc/refman/8.0/en/insert-on-duplicate.html
         await db.query(`
             INSERT INTO user_states (user_id, parties_json, parliament_json)
-            VALUES (?, ?, ?)
-            ON DUPLICATE KEY UPDATE 
-                parties_json = VALUES(parties_json),
-                parliament_json = VALUES(parliament_json),
+            VALUES (?, ?, ?) AS new_row
+            ON DUPLICATE KEY UPDATE
+                parties_json = new_row.parties_json,
+                parliament_json = new_row.parliament_json,
                 last_updated = CURRENT_TIMESTAMP
         `, [userId, partiesJson, parliamentJson]);
         
