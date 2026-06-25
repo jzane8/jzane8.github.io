@@ -1,8 +1,12 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, lazy, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { usePuzzle } from '../hooks/usePuzzle';
-import PuzzleModal from './PuzzleModal';
+
+// The puzzle modal (+ its 5 puzzle types) only appears after the user clicks
+// the "S" button. Lazy-load it so its code stays out of the critical bundle
+// that ships on every page — including the landing dashboard.
+const PuzzleModal = lazy(() => import('./PuzzleModal'));
 
 /**
  * The red "S" button fixed at bottom-right.
@@ -68,14 +72,16 @@ export default function ThemeToggle() {
         <span>S</span>
       </button>
 
-      {/* Puzzle Modal */}
+      {/* Puzzle Modal — lazily loaded on first open */}
       {showPuzzle && (
-        <PuzzleModal
-          puzzle={puzzle}
-          onSuccess={handlePuzzleSuccess}
-          onFailure={handlePuzzleFailure}
-          onClose={() => setShowPuzzle(false)}
-        />
+        <Suspense fallback={null}>
+          <PuzzleModal
+            puzzle={puzzle}
+            onSuccess={handlePuzzleSuccess}
+            onFailure={handlePuzzleFailure}
+            onClose={() => setShowPuzzle(false)}
+          />
+        </Suspense>
       )}
 
       {/* Cooldown Modal */}

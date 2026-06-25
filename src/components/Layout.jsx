@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
+import RouteFallback from './RouteFallback';
 
 /**
  * Shared layout for all portfolio pages.
@@ -61,9 +62,12 @@ export default function Layout() {
         </nav>
       </div>
 
-      {/* Page Content */}
+      {/* Page Content — Suspense keeps the header/nav mounted while a lazy
+          page chunk loads. */}
       <main className="body">
-        <Outlet />
+        <Suspense fallback={<RouteFallback />}>
+          <Outlet />
+        </Suspense>
       </main>
 
       {/* Theme toggle / puzzle button */}

@@ -200,15 +200,17 @@ li {
   max-width: 900px;
   margin: 2rem auto;
   background-color: var(--content-bg);
-  backdrop-filter: blur(10px);
   border-radius: 20px;
   overflow: hidden;
   box-shadow: var(--shadow-xl);
   min-height: calc(100vh - 4rem);
 }
 
+/* The sonia theme uses a translucent background, so the blur is actually
+   visible there — scope the expensive backdrop composite to that case only. */
 [data-theme='sonia'] .wrap {
   background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
 }
 
 /* ==========================================================================
@@ -220,7 +222,7 @@ li {
   color: white;
   padding: var(--space-2xl);
   position: relative;
-  transition: all var(--transition-base);
+  transition: padding var(--transition-base);
   overflow: hidden;
 }
 
@@ -228,6 +230,9 @@ li {
   background: var(--header-bg);
 }
 
+/* Static decorative sheen. Previously rotated infinitely (animation: rotate
+   20s linear infinite), which kept the compositor awake the entire time the
+   landing dashboard was open. Kept static for a continuously-idle header. */
 .intro::before {
   content: '';
   position: absolute;
@@ -236,7 +241,6 @@ li {
   width: 200%;
   height: 200%;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-  animation: rotate 20s linear infinite;
 }
 
 .intro.minimized {
@@ -293,7 +297,8 @@ li {
   gap: var(--space-md);
   flex-wrap: wrap;
   margin-top: var(--space-lg);
-  transition: all var(--transition-base);
+  transition: height var(--transition-base), margin-top var(--transition-base),
+    opacity var(--transition-base);
   position: relative;
   z-index: 1;
 }
@@ -309,7 +314,8 @@ li {
   padding: var(--space-sm) var(--space-lg);
   background-color: var(--sidebar-tab-bg);
   border-radius: 6px;
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), transform var(--transition-fast),
+    box-shadow var(--transition-fast);
   box-shadow: var(--shadow-sm);
   position: relative;
   overflow: hidden;
@@ -323,7 +329,7 @@ li {
   width: 0;
   height: 0;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
-  transition: all 0.5s ease;
+  transition: width 0.5s ease, height 0.5s ease;
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
@@ -421,10 +427,25 @@ a.sidebar-tab:hover {
   padding: 2rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease;
   opacity: 0;
   transform: translateX(30px);
   animation: slideInRight 0.8s ease-out forwards;
+}
+
+/* Elevated hover shadow on a separate layer, faded with opacity — so hover
+   animates only compositor-friendly transform + opacity, never box-shadow
+   (which would force a repaint of every card on hover). */
+.work-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 15px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: -1;
 }
 
 [data-theme='dark'] .work-item {
@@ -441,7 +462,10 @@ a.sidebar-tab:hover {
 
 .work-item:hover {
   transform: translateX(10px) translateY(-5px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.work-item:hover::after {
+  opacity: 1;
 }
 
 .work-item::before {
@@ -488,7 +512,7 @@ a.sidebar-tab:hover {
   color: var(--link-color);
   text-decoration: none;
   border-bottom: 1px solid transparent;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, border-bottom-color 0.3s ease;
   font-weight: 500;
 }
 
@@ -513,7 +537,7 @@ a.sidebar-tab:hover {
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 8px 32px rgba(255, 23, 68, 0.4);
   z-index: 100;
   overflow: hidden;
@@ -527,7 +551,7 @@ a.sidebar-tab:hover {
   width: 0;
   height: 0;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
-  transition: all 0.5s ease;
+  transition: width 0.5s ease, height 0.5s ease;
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
@@ -964,11 +988,6 @@ a.sidebar-tab:hover {
   to   { opacity: 1; transform: translateX(0); }
 }
 
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
 @keyframes modalFadeIn {
   from { opacity: 0; transform: scale(0.95); }
   to   { opacity: 1; transform: scale(1); }
@@ -978,6 +997,31 @@ a.sidebar-tab:hover {
   0%   { transform: scale(0.8); opacity: 0; }
   50%  { transform: scale(1.05); opacity: 1; }
   100% { transform: scale(1); opacity: 1; }
+}
+
+/* ==========================================================================
+   Reduced Motion — honor the OS "reduce motion" preference
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Entrance animations begin hidden (opacity:0 / translated); make sure the
+     content is fully visible when motion is suppressed. */
+  .work-item,
+  .content-intro,
+  .intro h2,
+  .body {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 /* ==========================================================================
@@ -998,6 +1042,27 @@ a.sidebar-tab:hover {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* Lazy-route loading placeholder (see RouteFallback.jsx) */
+.route-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+}
+
+.route-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--link-color);
+  border-radius: 50%;
+  animation: route-spin 0.8s linear infinite;
+}
+
+@keyframes route-spin {
+  to { transform: rotate(360deg); }
 }
 
 /* ==========================================================================
