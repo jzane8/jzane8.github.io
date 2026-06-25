@@ -13,7 +13,7 @@ const PuzzleModal = lazy(() => import('./PuzzleModal'));
  * Clicking it opens the puzzle system. On success it activates the
  * Sonia theme and shows a link to the Wheel of Fortune.
  */
-export default function ThemeToggle() {
+export default function ThemeToggle({ hidden = false }) {
   const { activateSoniaTheme } = useTheme();
   const navigate = useNavigate();
   const puzzle = usePuzzle();
@@ -68,9 +68,11 @@ export default function ThemeToggle() {
 
   return (
     <>
-      <button className="theme-toggle" onClick={handleClick} aria-label="Open puzzle">
-        <span>S</span>
-      </button>
+      {!hidden && (
+        <button className="theme-toggle" onClick={handleClick} aria-label="Open puzzle">
+          <span>S</span>
+        </button>
+      )}
 
       {/* Puzzle Modal — lazily loaded on first open */}
       {showPuzzle && (
